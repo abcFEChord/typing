@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>TEMPORAL DEFENSE — Typing Game</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -69,13 +71,13 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--dk);font-famil
 }
 #type-panel::before{content:attr(data-label);position:absolute;top:5px;font-family:'Orbitron',sans-serif;font-size:7px;letter-spacing:4px;color:var(--dim)}
 
-#words-d{display:flex;flex-wrap:wrap;gap:8px 14px;justify-content:center;max-width:960px;padding:6px 0;min-height:44px;align-items:center}
+#words-d{display:flex;flex-wrap:wrap;gap:8px 14px;justify-content:center;max-width:960px;padding:6px 0;min-height:56px;max-height:72px;align-items:center;overflow:hidden}
 .wb{font-size:18px;letter-spacing:2px;padding:3px 8px;border:1px dotted var(--dim);color:var(--dim);transition:all .15s;text-transform:uppercase;cursor:default;white-space:nowrap}
 .wb.active{border-color:var(--o);color:var(--txt);box-shadow:0 0 12px rgba(232,117,26,0.3)}
 .wb .tp{color:var(--o);text-shadow:0 0 8px var(--glow)}.wb .te{color:#FF4444;text-shadow:0 0 6px rgba(255,50,50,0.5)}
 .wb.done{border-color:transparent;color:transparent;transform:scale(0.8);opacity:0;transition:all .3s ease-out;pointer-events:none}
 
-#sent-d{font-size:18px;letter-spacing:1px;width:62ch;max-width:92%;text-align:left;line-height:1.9;padding:4px 0;min-height:50px;color:var(--dim);display:none;word-wrap:break-word;overflow-wrap:break-word}
+#sent-d{font-size:18px;letter-spacing:1px;width:62ch;max-width:92%;text-align:left;line-height:1.9;padding:4px 0;min-height:56px;max-height:72px;overflow:hidden;color:var(--dim);display:none;word-wrap:break-word;overflow-wrap:break-word}
 #free-d{display:none;width:100%;max-width:900px;height:42px;overflow:hidden;position:relative;align-items:center}
 #free-inner{position:absolute;white-space:nowrap;font-size:20px;letter-spacing:3px;font-family:'Share Tech Mono',monospace;transition:transform 0.05s linear;text-transform:uppercase}
 .fc{color:var(--dim)}.ft{color:var(--o);text-shadow:0 0 6px rgba(232,117,26,0.5)}.fcc{color:var(--txt);border-bottom:2px solid var(--o)}
@@ -84,7 +86,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--dk);font-famil
 #input-show{font-size:12px;color:var(--o);margin-top:6px;letter-spacing:2px;height:20px;border:1px dotted var(--dim);padding:2px 14px;min-width:180px;text-align:center}
 #input-show::after{content:'█';animation:blink .6s step-end infinite;color:var(--o)}
 @keyframes blink{50%{opacity:0}}
-#hidden-input{position:absolute;left:-9999px;opacity:0}
+#hidden-input{position:fixed;bottom:0;left:0;width:1px;height:1px;opacity:0;border:none;padding:0;margin:0}
 
 /* ── ENEMIES ── */
 .enemy{position:absolute;z-index:30;pointer-events:none;display:flex;align-items:center;justify-content:center}
@@ -251,53 +253,130 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--dk);font-famil
 
 
 /* ── MOBILE SUPPORT ── */
-@media(max-width:768px),(max-height:500px){
-  #hud{top:6px;left:8px;right:8px;padding:0 4px}
-  .hud-v{font-size:13px;min-width:30px}
-  .hud-l{font-size:7px}
-  #title-badge{font-size:9px;letter-spacing:3px;padding:2px 8px}
-  #hp-bar-c{width:70px;height:6px}
-  #wpm-d{top:42px;left:12px}
-  #wpm-v{font-size:16px}
-  #acc-d{top:68px;left:12px}
+@media(max-width:768px){
+  /* Hide decorative ads and frame */
+  #ad-left,#ad-right{display:none}
+  #frame,#frame::before{display:none}
+
+  /* HUD — slim single row */
+  #hud{top:0;left:0;right:0;padding:4px 10px;
+    background:rgba(10,10,8,0.9);border-bottom:1px dotted var(--dim);
+    z-index:200}
+  .hud-v{font-size:13px;min-width:28px}
+  .hud-l{font-size:6px}
+  #title-badge{font-size:8px;letter-spacing:2px;padding:2px 6px}
+  #hp-bar-c{width:60px;height:5px}
+
+  /* WPM / ACC / COMBO — tuck under HUD */
+  #wpm-d{top:32px;left:10px}
+  #wpm-v{font-size:14px}
+  #acc-d{top:52px;left:10px}
   #acc-v{font-size:11px}
-  #combo-d{top:42px;right:12px;font-size:18px}
-  #game-area{top:36px;left:8px;right:8px;bottom:120px}
-  #type-panel{height:112px;padding:6px 12px}
-  #type-panel::before{font-size:6px;top:3px}
-  #words-d{gap:6px 10px;max-width:100%;padding:4px 0}
-  .wb{font-size:14px;letter-spacing:1px;padding:2px 6px}
-  #sent-d{font-size:14px;width:45ch;line-height:1.6}
-  #input-show{font-size:11px;height:18px;padding:1px 10px;min-width:140px}
-  #frame{inset:4px;border-width:1px}
-  #frame::before{inset:2px}
-  #base{width:44px;height:22px}
-  .turret-body{width:44px;height:14px}
-  .turret-barrel{width:4px;height:12px;bottom:12px}
-  .enemy-scout{width:28px;height:28px}
-  .enemy-scout .ebody{width:22px;height:22px}
-  .enemy-drone{width:34px;height:34px}
-  .enemy-drone .ebody{width:28px;height:16px}
-  .enemy-drone .ebody::before,.enemy-drone .ebody::after{border-left:14px solid transparent;border-right:14px solid transparent}
-  .enemy-drone .ebody::before{top:-9px;border-bottom:9px solid var(--amb)}
-  .enemy-drone .ebody::after{bottom:-9px;border-top:9px solid var(--amb)}
-  .enemy-tank{width:42px;height:30px}
-  .enemy-tank .ebody{width:36px;height:24px}
-  .enemy-boss{width:52px;height:52px}
-  .enemy-boss .ebody{width:44px;height:44px;font-size:16px}
-  #overlay h1{font-size:24px;letter-spacing:6px}
-  #overlay h2{font-size:10px;letter-spacing:3px}
-  .mode-btn{font-size:10px;padding:10px 20px;letter-spacing:2px}
-  .start-btn{font-size:11px;padding:9px 28px;letter-spacing:3px}
-  #lb-btn{font-size:9px;padding:5px 16px}
-  .mode-desc{font-size:8px}
-  #attr-line{font-size:6px;max-width:300px}
-  #snd-tog{font-size:7px;padding:2px 6px;top:6px;right:8px}
-  #lvl-ban{font-size:24px;letter-spacing:6px}
-  #lvl-sub{font-size:9px;letter-spacing:3px}
-  .stats-line{font-size:10px}
-  #pause-panel h1{font-size:22px;letter-spacing:6px}
-  .pause-btn{font-size:10px;padding:10px 24px;min-width:180px}
+  #combo-d{top:32px;right:10px;font-size:16px}
+
+  /* Game area — full width, max height */
+  #game-area{
+    top:28px;left:0;right:0;
+    bottom:var(--panel-h, 120px);
+  }
+
+  /* Uniform typing panel height for all modes */
+  #type-panel{
+    height:120px;padding:4px 10px 8px;
+    --panel-h:120px;
+  }
+  #type-panel::before{font-size:6px;top:3px;letter-spacing:2px}
+
+  /* Words mode */
+  #words-d{gap:5px 8px;max-width:100%;padding:4px 0;min-height:36px}
+  .wb{font-size:13px;letter-spacing:1px;padding:2px 5px;white-space:nowrap}
+
+  /* Chronicles mode */
+  #sent-d{font-size:13px;width:100%;max-width:100%;line-height:1.6;min-height:44px}
+
+  /* Input display */
+  #input-show{font-size:10px;height:18px;padding:2px 8px;min-width:120px;margin-top:4px}
+
+  /* Turret — smaller */
+  #base{width:36px;height:18px}
+  .turret-body{width:36px;height:10px;border-radius:2px 2px 0 0}
+  .turret-barrel{width:2px;height:8px;bottom:10px}
+
+  /* Enemy sizes */
+  .enemy-scout{width:24px;height:24px}
+  .enemy-scout .ebody{width:18px;height:18px}
+  .enemy-drone{width:30px;height:30px}
+  .enemy-drone .ebody{width:24px;height:14px}
+  .enemy-drone .ebody::before,.enemy-drone .ebody::after{border-left:12px solid transparent;border-right:12px solid transparent}
+  .enemy-drone .ebody::before{top:-7px;border-bottom:7px solid var(--amb)}
+  .enemy-drone .ebody::after{bottom:-7px;border-top:7px solid var(--amb)}
+  .enemy-tank{width:36px;height:26px}
+  .enemy-tank .ebody{width:30px;height:20px}
+  .enemy-glitch{width:24px;height:24px}
+  .enemy-glitch .ebody{width:20px;height:20px}
+  .enemy-boss{width:44px;height:44px}
+  .enemy-boss .ebody{width:36px;height:36px}
+  .enemy-boss .ebody::after{font-size:14px}
+
+  /* Overlay — compact */
+  #overlay{gap:8px;padding:12px}
+  #overlay h1{font-size:22px;letter-spacing:5px}
+  #overlay h2{font-size:9px;letter-spacing:2px}
+  .mode-sel{gap:8px;flex-wrap:wrap;justify-content:center}
+  .mode-btn{font-size:10px;padding:10px 18px;letter-spacing:2px;min-width:90px}
+  .mode-desc{font-size:7px;letter-spacing:1px}
+  .start-btn{font-size:11px;padding:10px 28px;letter-spacing:3px}
+  #lb-btn{font-size:8px;padding:5px 14px}
+  #attr-line{font-size:6px;max-width:280px;line-height:1.3}
+  #snd-tog,#theme-tog-overlay{font-size:7px;padding:2px 6px}
+  #theme-tog-hud{font-size:7px;padding:2px 6px}
+
+  /* Level banner */
+  #lvl-ban{font-size:22px;letter-spacing:5px}
+  #lvl-sub{font-size:8px;letter-spacing:2px}
+
+  /* Pause panel */
+  #pause-panel h1{font-size:20px;letter-spacing:5px}
+  .pause-btn{font-size:9px;padding:10px 20px;min-width:160px}
+  #pause-stats{font-size:10px}
+
+  /* Free zen mode — full screen, max text space */
+  #free-zen{
+    width:92%;padding:16px 14px 12px;
+    top:48%;
+  }
+  #free-zen-text{font-size:15px;line-height:1.8;max-height:48vh}
+  #free-zen-prog{font-size:7px;margin-top:8px;padding-top:6px}
+
+  /* Tap prompt */
+  #tap-prompt{bottom:130px;font-size:8px}
+
+  /* LB panel */
+  #lb-table{font-size:11px}
+  #lb-panel h2{font-size:14px;letter-spacing:3px}
+
+  /* Name entry */
+  #name-input{font-size:16px;padding:8px 14px;width:220px}
+}
+
+/* Portrait phones — extra compact */
+@media(max-width:480px){
+  #title-badge{display:none}
+  #hud{justify-content:space-between}
+  .wb{font-size:12px;padding:2px 4px}
+  #sent-d{font-size:12px}
+  #free-zen-text{font-size:13px;max-height:44vh}
+  #overlay h1{font-size:18px;letter-spacing:4px}
+}
+
+/* Landscape phones — maximize game area */
+@media(max-height:500px){
+  #hud{top:0;padding:2px 8px}
+  #game-area{top:24px;bottom:100px}
+  #type-panel{height:100px;padding:4px 10px 6px}
+  #wpm-d,#acc-d,#combo-d{display:none}
+  #free-zen-text{font-size:13px;max-height:55vh}
+  #free-zen{top:46%;padding:10px 14px 8px}
 }
 
 /* Tap-to-type prompt for touch devices */
