@@ -57,8 +57,8 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--dk);font-famil
 /* ── Game canvas ── */
 #game-area{position:absolute;top:50px;left:16px;right:16px;bottom:148px;overflow:hidden}
 #base{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:60px;height:30px;z-index:40}
-.turret-body{width:60px;height:20px;background:linear-gradient(180deg,var(--o),#8B4513);border:1px solid var(--amb);border-radius:4px 4px 0 0;position:absolute;bottom:0;box-shadow:0 0 15px var(--glow),inset 0 2px 4px rgba(255,255,255,0.2)}
-.turret-barrel{width:6px;height:18px;background:var(--o);position:absolute;bottom:18px;left:50%;transform:translateX(-50%);border-radius:2px 2px 0 0;box-shadow:0 0 8px var(--glow);transition:transform .05s}
+.turret-body{width:60px;height:14px;background:var(--o);border:1px solid var(--amb);border-radius:2px 2px 0 0;position:absolute;bottom:0;}
+.turret-barrel{width:3px;height:12px;background:var(--amb);position:absolute;bottom:14px;left:50%;transform:translateX(-50%);transition:transform .05s}
 
 /* ── Typing panel ── */
 #type-panel{
@@ -76,6 +76,9 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--dk);font-famil
 .wb.done{border-color:transparent;color:transparent;transform:scale(0.8);opacity:0;transition:all .3s ease-out;pointer-events:none}
 
 #sent-d{font-size:18px;letter-spacing:1px;width:62ch;max-width:92%;text-align:left;line-height:1.9;padding:4px 0;min-height:50px;color:var(--dim);display:none;word-wrap:break-word;overflow-wrap:break-word}
+#free-d{display:none;width:100%;max-width:900px;height:42px;overflow:hidden;position:relative;align-items:center}
+#free-inner{position:absolute;white-space:nowrap;font-size:20px;letter-spacing:3px;font-family:'Share Tech Mono',monospace;transition:transform 0.05s linear;text-transform:uppercase}
+.fc{color:var(--dim)}.ft{color:var(--o);text-shadow:0 0 6px rgba(232,117,26,0.5)}.fcc{color:var(--txt);border-bottom:2px solid var(--o)}
 .tc{color:var(--o);text-shadow:0 0 8px var(--glow)}.te{color:#FF4444;text-shadow:0 0 6px rgba(255,50,50,0.5);text-decoration:underline;text-decoration-color:#FF4444}.cc{color:var(--txt);border-bottom:2px solid var(--o);padding-bottom:1px;min-width:0.5ch;display:inline-block}
 
 #input-show{font-size:12px;color:var(--o);margin-top:6px;letter-spacing:2px;height:20px;border:1px dotted var(--dim);padding:2px 14px;min-width:180px;text-align:center}
@@ -153,7 +156,16 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--dk);font-famil
 .ehp-pip.empty{background:rgba(107,94,62,0.3)}
 
 /* ── Bullets ── */
-.bullet{position:absolute;width:4px;height:16px;background:var(--bullet);box-shadow:0 0 8px var(--glow),0 0 20px rgba(255,140,0,0.4);border-radius:2px;z-index:25}
+/* Player bullet — bright orange laser line */
+.bullet{position:absolute;width:2px;height:14px;background:#FFA040;z-index:25}
+/* Enemy bullets — flat colored bars, no glow */
+.ebullet{position:absolute;z-index:24}
+.ebullet.thin{width:1px;height:8px;background:#FF3333}
+.ebullet.medium{width:2px;height:10px;background:#FF88AA}
+.ebullet.thick{width:5px;height:8px;background:#CC0000}
+.ebullet.boss{width:4px;height:12px;background:#CC00CC}
+/* Glitch bullets handled via inline style override in fireEnemyBullet */
+.ebullet .ehp-bar{display:none}
 .particle{position:absolute;border-radius:50%;background:var(--o);box-shadow:0 0 6px var(--glow)}
 .screen-flash{position:absolute;inset:0;background:var(--o);opacity:0;pointer-events:none;z-index:90;animation:flash .2s ease-out}
 @keyframes flash{0%{opacity:.12}100%{opacity:0}}
@@ -184,13 +196,19 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--dk);font-famil
 .mode-sel{display:flex;gap:16px;margin-top:8px}
 .mode-btn{font-family:'Orbitron',sans-serif;font-size:12px;letter-spacing:3px;padding:12px 28px;border:2px dotted var(--o);background:transparent;color:var(--o);cursor:pointer;text-transform:uppercase;transition:all .2s;text-shadow:0 0 8px rgba(232,117,26,0.3)}
 .mode-btn:hover{opacity:0.8}
-.mode-btn.sel{border-color:var(--o);color:var(--o)}
+.mode-btn.sel{background:var(--o);color:var(--dk);text-shadow:none;border-style:solid}
 .start-btn{font-family:'Orbitron',sans-serif;font-size:13px;letter-spacing:4px;color:var(--dk);background:var(--o);border:none;padding:11px 36px;cursor:pointer;text-transform:uppercase;box-shadow:0 0 20px var(--glow);transition:all .2s;margin-top:8px}
 .start-btn:hover{box-shadow:0 0 40px var(--glow);transform:scale(1.05)}
 .stats-line{font-size:12px;color:var(--amb);letter-spacing:2px}
 .mode-desc{font-size:9px;color:var(--dim);letter-spacing:2px;margin-top:3px;font-family:'Share Tech Mono',monospace;text-align:center}
 #snd-tog{position:absolute;top:10px;right:14px;font-family:'Orbitron',sans-serif;font-size:8px;letter-spacing:2px;color:var(--dim);background:none;border:1px dotted var(--dim);padding:3px 8px;cursor:pointer;z-index:210;transition:all .2s}
 #snd-tog:hover{border-color:var(--o);color:var(--o)}
+#theme-tog-hud{position:absolute;top:10px;left:14px;font-family:'Orbitron',sans-serif;font-size:8px;letter-spacing:2px;color:var(--dim);background:none;border:1px dotted var(--dim);padding:3px 8px;cursor:pointer;z-index:210;transition:all .2s}
+#theme-tog-hud:hover{border-color:var(--o);color:var(--o)}
+#theme-tog-overlay{font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:2px;color:var(--dim);background:none;border:1px dotted var(--dim);padding:4px 10px;cursor:pointer;transition:all .2s}
+#theme-tog-overlay:hover{border-color:var(--o);color:var(--o)}
+#tunnel-canvas,#star-canvas{position:absolute;inset:0;z-index:0;pointer-events:none;display:none}
+#tunnel-canvas.active,#star-canvas.active{display:block}
 
 /* ── Leaderboard ── */
 #lb-btn{font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:3px;color:var(--amb);background:none;border:1px dotted var(--dim);padding:6px 20px;cursor:pointer;margin-top:4px;transition:all .2s}
@@ -293,6 +311,39 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--dk);font-famil
 @media(hover:none){
   #tap-prompt{display:block}
 }
+
+/* ── FREE ZEN MODE ── */
+#free-zen{
+  display:none;position:absolute;
+  top:50%;left:50%;transform:translate(-50%,-50%);
+  width:min(84%,760px);z-index:60;
+  padding:28px 36px 22px;
+  background:rgba(10,10,8,0.92);
+  border:1px dotted var(--dim);
+  box-shadow:0 0 60px rgba(0,0,0,0.5),0 0 30px rgba(232,117,26,0.04);
+  overflow:hidden;
+}
+#free-zen.active{display:block}
+#free-zen-label{
+  font-family:'Orbitron',sans-serif;font-size:7px;letter-spacing:4px;
+  color:rgba(107,94,62,0.4);display:block;margin-top:12px;text-align:center;
+  border-top:1px dotted rgba(107,94,62,0.2);padding-top:8px;
+}
+#free-zen-text{
+  font-family:'Share Tech Mono',monospace;font-size:20px;
+  line-height:2.05;letter-spacing:0.4px;word-break:break-word;
+  overflow:hidden;max-height:210px;position:relative;
+}
+#free-zen-prog{
+  font-family:'Orbitron',sans-serif;font-size:8px;letter-spacing:3px;
+  color:var(--dim);display:flex;justify-content:space-between;
+  margin-top:14px;border-top:1px dotted rgba(107,94,62,0.25);padding-top:10px;
+}
+@media(max-width:768px),(max-height:500px){
+  #free-zen{padding:16px 18px 14px}
+  #free-zen-text{font-size:15px;line-height:1.85;max-height:170px}
+  #free-zen-prog{font-size:7px}
+}
 </style>
 </head>
 <body>
@@ -302,6 +353,8 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--dk);font-famil
 <div id="game-wrap">
 <div id="gc">
   <div id="grid-bg"></div>
+  <canvas id="tunnel-canvas"></canvas>
+  <canvas id="star-canvas"></canvas>
   <div id="frame"></div>
 
   <div id="hud">
@@ -319,18 +372,25 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--dk);font-famil
 
   <div id="game-area">
     <div id="base"><div class="turret-barrel" id="barrel"></div><div class="turret-body"></div></div>
+    <div id="free-zen">
+      <div id="free-zen-text"></div>
+      <div id="free-zen-prog"><span id="fzp-words">0 WORDS</span><span id="fzp-pct">0%</span></div>
+      <span id="free-zen-label">▸ FREE FLOW ◂</span>
+    </div>
   </div>
 
   <div id="tap-prompt">TAP SCREEN TO TYPE</div>
   <div id="type-panel" data-label="▸ TYPE TO FIRE ◂">
     <div id="words-d"></div>
     <div id="sent-d"></div>
+    <div id="free-d"></div>
     <div id="input-show"><span id="typed-t"></span></div>
   </div>
 
   <div id="lvl-ban"><div id="lvl-ban-t"></div><div id="lvl-sub"></div></div>
 
   <!-- ── OVERLAY ── -->
+  <button id="theme-tog-hud">THEME: GRID</button>
   <div id="overlay">
     <h2>▸ TEMPORAL DEFENSE SYSTEM ◂</h2>
     <h1 id="ov-title">TYPE TO SURVIVE</h1>
@@ -339,16 +399,17 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--dk);font-famil
     <div class="mode-sel">
       <div><button class="mode-btn sel" data-mode="words">WORDS</button><div class="mode-desc">TYPE IN ANY ORDER</div></div>
       <div><button class="mode-btn" data-mode="sentences">CHRONICLES</button><div class="mode-desc">TYPE CLASSIC PASSAGES</div></div>
+      <div><button class="mode-btn" data-mode="free">FREE</button><div class="mode-desc">ZEN TYPING • NO ENEMIES</div></div>
     </div>
     <button class="start-btn" id="start-btn">INITIALIZE</button>
     <button id="lb-btn">LEADERBOARD</button>
-    <h2 style="font-size:9px;margin-top:4px">TYPE TO FIRE • DESTROY THREATS BEFORE THEY REACH BASE</h2>
+    <h2 id="ov-hint" style="font-size:9px;margin-top:4px">TYPE TO FIRE • DESTROY THREATS BEFORE THEY REACH BASE</h2>
     <div id="attr-line">
       WORDS: Google Trillion Word Corpus (Public Domain) &bull;
       CHRONICLES: Project Gutenberg Public Domain Classics &bull;
       Austen, Carroll, Baum, Stevenson, Twain, Barrie, Shelley, Dickens, Alcott, Wilde, Doyle, Montgomery
     </div>
-    <button id="snd-tog">SOUND: ON</button>
+    <div style="display:flex;gap:10px;margin-top:2px"><button id="snd-tog">SOUND: ON</button><button id="theme-tog-overlay">THEME: GRID</button></div>
   </div>
 
   <!-- ── LEADERBOARD PANEL ── -->
@@ -709,7 +770,7 @@ const SENTENCES = {
 let actx=null, sndOn=true;
 function initAudio(){if(!actx)actx=new(window.AudioContext||window.webkitAudioContext)();if(actx.state==='suspended')actx.resume()}
 const SFX={
-  key(){if(!sndOn||!actx)return;const o=actx.createOscillator(),g=actx.createGain();o.type='square';o.frequency.setValueAtTime(700+Math.random()*500,actx.currentTime);o.frequency.exponentialRampToValueAtTime(200,actx.currentTime+.04);g.gain.setValueAtTime(.05,actx.currentTime);g.gain.exponentialRampToValueAtTime(.001,actx.currentTime+.04);o.connect(g).connect(actx.destination);o.start();o.stop(actx.currentTime+.04)},
+  key(){if(!sndOn||!actx)return;const o=actx.createOscillator(),g=actx.createGain();o.type='square';o.frequency.setValueAtTime(800+Math.random()*400,actx.currentTime);o.frequency.exponentialRampToValueAtTime(300,actx.currentTime+.06);g.gain.setValueAtTime(.09,actx.currentTime);g.gain.exponentialRampToValueAtTime(.001,actx.currentTime+.06);o.connect(g).connect(actx.destination);o.start();o.stop(actx.currentTime+.06)},
   word(){if(!sndOn||!actx)return;[660,880].forEach((f,i)=>{const o=actx.createOscillator(),g=actx.createGain();o.type='sine';o.frequency.setValueAtTime(f,actx.currentTime+i*.08);g.gain.setValueAtTime(.1,actx.currentTime+i*.08);g.gain.exponentialRampToValueAtTime(.001,actx.currentTime+i*.08+.15);o.connect(g).connect(actx.destination);o.start(actx.currentTime+i*.08);o.stop(actx.currentTime+i*.08+.15)})},
   shoot(){if(!sndOn||!actx)return;const o=actx.createOscillator(),g=actx.createGain();o.type='sawtooth';o.frequency.setValueAtTime(1200,actx.currentTime);o.frequency.exponentialRampToValueAtTime(100,actx.currentTime+.15);g.gain.setValueAtTime(.12,actx.currentTime);g.gain.exponentialRampToValueAtTime(.001,actx.currentTime+.15);o.connect(g).connect(actx.destination);o.start();o.stop(actx.currentTime+.15)},
   explode(){if(!sndOn||!actx)return;const n=actx.sampleRate*.3,b=actx.createBuffer(1,n,actx.sampleRate),d=b.getChannelData(0);for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/n,2);const s=actx.createBufferSource();s.buffer=b;const g=actx.createGain();g.gain.setValueAtTime(.2,actx.currentTime);g.gain.exponentialRampToValueAtTime(.001,actx.currentTime+.3);const f=actx.createBiquadFilter();f.type='lowpass';f.frequency.setValueAtTime(1000,actx.currentTime);f.frequency.exponentialRampToValueAtTime(100,actx.currentTime+.3);s.connect(f).connect(g).connect(actx.destination);s.start();s.stop(actx.currentTime+.3)},
@@ -718,7 +779,8 @@ const SFX={
   err(){if(!sndOn||!actx)return;const o=actx.createOscillator(),g=actx.createGain();o.type='square';o.frequency.setValueAtTime(120,actx.currentTime);g.gain.setValueAtTime(.06,actx.currentTime);g.gain.exponentialRampToValueAtTime(.001,actx.currentTime+.08);o.connect(g).connect(actx.destination);o.start();o.stop(actx.currentTime+.08)},
   combo(){if(!sndOn||!actx)return;const o=actx.createOscillator(),g=actx.createGain();o.type='triangle';o.frequency.setValueAtTime(1000,actx.currentTime);o.frequency.exponentialRampToValueAtTime(1600,actx.currentTime+.1);g.gain.setValueAtTime(.08,actx.currentTime);g.gain.exponentialRampToValueAtTime(.001,actx.currentTime+.15);o.connect(g).connect(actx.destination);o.start();o.stop(actx.currentTime+.15)},
   boss(){if(!sndOn||!actx)return;[200,160,200,250,200].forEach((f,i)=>{const o=actx.createOscillator(),g=actx.createGain();o.type='sawtooth';o.frequency.setValueAtTime(f,actx.currentTime+i*.15);g.gain.setValueAtTime(.12,actx.currentTime+i*.15);g.gain.exponentialRampToValueAtTime(.001,actx.currentTime+i*.15+.2);o.connect(g).connect(actx.destination);o.start(actx.currentTime+i*.15);o.stop(actx.currentTime+i*.15+.2)})},
-  gameOver(){if(!sndOn||!actx)return;[300,250,200,120].forEach((f,i)=>{const o=actx.createOscillator(),g=actx.createGain();o.type='sawtooth';o.frequency.setValueAtTime(f,actx.currentTime+i*.2);g.gain.setValueAtTime(.1,actx.currentTime+i*.2);g.gain.exponentialRampToValueAtTime(.001,actx.currentTime+i*.2+.3);o.connect(g).connect(actx.destination);o.start(actx.currentTime+i*.2);o.stop(actx.currentTime+i*.2+.3)})}
+  gameOver(){if(!sndOn||!actx)return;[300,250,200,120].forEach((f,i)=>{const o=actx.createOscillator(),g=actx.createGain();o.type='sawtooth';o.frequency.setValueAtTime(f,actx.currentTime+i*.2);g.gain.setValueAtTime(.1,actx.currentTime+i*.2);g.gain.exponentialRampToValueAtTime(.001,actx.currentTime+i*.2+.3);o.connect(g).connect(actx.destination);o.start(actx.currentTime+i*.2);o.stop(actx.currentTime+i*.2+.3)})},
+  enemyShoot(){if(!sndOn||!actx)return;const o=actx.createOscillator(),g=actx.createGain();o.type='sawtooth';o.frequency.setValueAtTime(300,actx.currentTime);o.frequency.exponentialRampToValueAtTime(80,actx.currentTime+.12);g.gain.setValueAtTime(.04,actx.currentTime);g.gain.exponentialRampToValueAtTime(.001,actx.currentTime+.12);o.connect(g).connect(actx.destination);o.start();o.stop(actx.currentTime+.12)}
 };
 
 // ══════════════════════════════════════════════════════
@@ -777,7 +839,7 @@ function renderLB() {
   }
   leaderboard.slice(0, 20).forEach((e, i) => {
     const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${i + 1}</td><td>${e.name}</td><td>${e.score}</td><td>${e.level}</td><td>${e.wpm}</td><td style="font-size:10px">${e.mode === 'words' ? 'W' : 'S'}</td>`;
+    tr.innerHTML = `<td>${i + 1}</td><td>${e.name}</td><td>${e.score}</td><td>${e.level}</td><td>${e.wpm}</td><td style="font-size:10px">${e.mode === 'words' ? 'W' : e.mode === 'sentences' ? 'S' : 'F'}</td>`;
     body.appendChild(tr);
   });
 }
@@ -788,9 +850,10 @@ function renderLB() {
 const S = {
   running: false, paused: false, mode: 'words',
   score: 0, level: 1, hp: 100, maxHp: 100,
-  enemies: [], bullets: [], particles: [],
+  enemies: [], bullets: [], enemyBullets: [], particles: [],
   words: [], activeIdx: -1, typedN: 0, doneWords: new Set(),
   sentence: '', sentIdx: 0, sentInput: [], wordInput: [],
+  freeText: '', freeIdx: 0,
   combo: 0, maxCombo: 0, wordsTyped: 0,
   totalChars: 0, correctChars: 0, // for accuracy
   startTime: 0,
@@ -828,12 +891,63 @@ const ETYPES = [
 ];
 const BOSS = { cls: 'enemy-boss', hp: 5, speed: 0.4, label: 'Boss' };
 
+// Enemy bullet config keyed by enemy class
+const EBULLET_CFG = {
+  'enemy-scout':  { cls:'thin',   hp:1, speed:2.0, fireRate:6000, spread:0 },
+  'enemy-drone':  { cls:'medium', hp:2, speed:2.5, fireRate:6000, spread:0 },
+  'enemy-tank':   { cls:'thick',  hp:3, speed:1.8, fireRate:9000, spread:0 },
+  'enemy-glitch': { cls:'thin',   hp:1, speed:4.5, fireRate:7000, spread:0 },
+  'enemy-boss':   { cls:'boss',   hp:4, speed:2.0, fireRate:4500, spread:2 },
+};
+
+function fireEnemyBullet(enemy, cap) {
+  const cfg = EBULLET_CFG[enemy.type];
+  if (!cfg) return;
+  const rect = ga.getBoundingClientRect();
+  const shots = cfg.spread > 0 ? cfg.spread : 1;
+
+  for (let i = 0; i < shots; i++) {
+    // Enforce cap per bullet, not just per fire call
+    if (S.enemyBullets.filter(eb => eb.alive).length >= cap) break;
+
+    const el = document.createElement('div');
+    el.className = `ebullet ${cfg.cls}`;
+
+    const ex = enemy.x + 25;
+    const ey = enemy.y + 20;
+    el.style.left = ex + 'px';
+    el.style.top  = ey + 'px';
+    ga.appendChild(el);
+
+    let vx = 0;
+    if (cfg.spread > 1) {
+      vx = (i - Math.floor(shots / 2)) * 0.8;
+    }
+    if (enemy.type === 'enemy-glitch') el.style.background = '#00FFCC';
+    if (enemy.type === 'enemy-glitch') vx = (Math.random() - 0.5) * 2;
+
+    S.enemyBullets.push({
+      el, x: ex, y: ey,
+      vx, vy: cfg.speed,
+      hp: cfg.hp, maxHp: cfg.hp,
+      cls: cfg.cls,
+      alive: true
+    });
+  }
+}
+
+function updateEBulletPips(eb) {
+  const pips = eb.el.querySelectorAll('.ehp-pip');
+  pips.forEach((p, i) => p.classList.toggle('empty', i >= eb.hp));
+}
+
 // Weights shift per level — heavier enemies appear more over time
 function getWeights(level) {
-  if (level <= 2) return { scout: 50, drone: 20, tank: 5,  glitch: 25 };
-  if (level <= 4) return { scout: 35, drone: 30, tank: 15, glitch: 20 };
-  if (level <= 7) return { scout: 20, drone: 30, tank: 30, glitch: 20 };
-  return              { scout: 15, drone: 25, tank: 40, glitch: 20 };
+  if (level <= 2) return { scout: 55, drone: 25, tank:  0, glitch: 20 };
+  if (level <= 4) return { scout: 45, drone: 30, tank:  5, glitch: 20 };
+  if (level <= 6) return { scout: 30, drone: 35, tank: 15, glitch: 20 };
+  if (level <= 8) return { scout: 20, drone: 30, tank: 30, glitch: 20 };
+  return               { scout: 15, drone: 25, tank: 40, glitch: 20 };
 }
 
 function pickEType(level) {
@@ -850,9 +964,10 @@ function pickEType(level) {
   return ETYPES[0];
 }
 
-// ── WORD MODE: HP budget = total words to type ──
-function getLevelBudget(level) {
-  return 12 + level * 6;
+// ── WORD MODE: fixed enemy count per level ──
+function getLevelEnemyCount(level) {
+  // Level 1=4, then +3 per level: 4, 7, 10, 13, 16+boss...
+  return 1 + Math.ceil(level * 2.4);
 }
 
 function planLevel(level) {
@@ -860,38 +975,41 @@ function planLevel(level) {
   S.eKilled = 0;
 
   if (S.mode === 'sentences') {
-    // Sentence mode: continuous spawning, kill target to advance
-    S.eKillTarget = 9 + level * 6;  // 15, 21, 27, 33...
-    S.ePer = 999;        // no cap — enemies spawn until kill target met
+    S.eKillTarget = 4 + level * 2; // L1:6, L2:8, L3:10...
+    S.ePer = 999;
     S.eRoster = [];
     S.totalHits = 0;
     S.hitsDealt = 0;
     return;
   }
 
-  // Word mode: budget-based roster
-  const budget = getLevelBudget(level);
+  if (S.mode === 'free') {
+    S.eKillTarget = 0;
+    S.ePer = 0;
+    S.eRoster = [];
+    S.totalHits = 0;
+    S.hitsDealt = 0;
+    S.freePassagesThisLevel = 0;
+    return;
+  }
+
+  // Word mode: fixed enemy count, random types
+  const count = getLevelEnemyCount(level);
   const isBossLevel = level % 5 === 0;
   const roster = [];
-  let spent = 0;
 
+  // Always include boss on boss levels
   if (isBossLevel) {
     roster.push({ type: BOSS, hpVal: BOSS.hp });
   }
 
-  while (spent < budget) {
-    const remaining = budget - spent;
+  // Fill remaining slots with random enemy types
+  while (roster.length < count + (isBossLevel ? 1 : 0)) {
     const type = pickEType(level);
-    if (type.hp <= remaining) {
-      roster.push({ type, hpVal: type.hp });
-      spent += type.hp;
-    } else {
-      roster.push({ type: ETYPES[0], hpVal: 1 });
-      spent += 1;
-    }
+    roster.push({ type, hpVal: type.hp });
   }
 
-  // Shuffle so boss isn't always first
+  // Shuffle
   for (let i = roster.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [roster[i], roster[j]] = [roster[j], roster[i]];
@@ -899,7 +1017,7 @@ function planLevel(level) {
 
   S.eRoster = roster;
   S.ePer = roster.length;
-  S.totalHits = spent + (isBossLevel ? BOSS.hp : 0);
+  S.totalHits = roster.reduce((sum, e) => sum + e.hpVal, 0);
   S.hitsDealt = 0;
   S.eKillTarget = 0;
 }
@@ -933,7 +1051,7 @@ function updateEHPPips(enemy) {
 //  WORD MODE
 // ══════════════════════════════════════════════════════
 function pickWords() {
-  const tier = Math.min(S.level, 6);
+  const tier = Math.min(Math.ceil(S.level / 2), 6); // L1-2:tier1, L3-4:tier2, L5-6:tier3...
   const pool = [];
   for (let t = Math.max(1, tier - 1); t <= tier; t++) pool.push(...(WORDS[t] || WORDS[6]));
   const shuffled = [...pool].sort(() => Math.random() - 0.5);
@@ -989,7 +1107,7 @@ function generateWordSeq(level) {
 }
 
 function pickSent() {
-  const tier = Math.min(S.level, 5);
+  const tier = Math.min(Math.ceil(S.level / 2), 5); // L1-2:tier1, L3-4:tier2, L5-6:tier3, L7-8:tier4, L9-10:tier5
 
   // 50% curated literary sentence, 50% generated word sequence
   if (Math.random() < 0.5) {
@@ -1047,18 +1165,19 @@ function renderS() {
 //  ENEMIES, BULLETS, EFFECTS
 // ══════════════════════════════════════════════════════
 function spawnEnemy() {
+  if (S.mode === 'free') return;
   if (S.eSpawned >= S.ePer) return;
   const rect = ga.getBoundingClientRect();
 
   let type, hpVal;
 
-  if (S.mode === 'sentences') {
+  if (S.mode === 'sentences' || S.mode === 'free') {
     // Sentence mode: continuous random spawns
     // Stop spawning once kill target is met
     if (S.eKilled >= S.eKillTarget) return;
     // Cap concurrent alive enemies to prevent flooding
     const alive = S.enemies.filter(e => e.alive).length;
-    if (alive >= 10 + S.level * 2) return;
+    if (alive >= 3 + S.level) return; // L1:4, L2:5, L3:6... max on screen at once
     // Boss every 5 levels, once per level (when eSpawned hits target - 1)
     const isBoss = S.level % 5 === 0 && S.eSpawned === S.eKillTarget - 1;
     type = isBoss ? BOSS : pickEType(S.level);
@@ -1085,28 +1204,29 @@ function spawnEnemy() {
     setTimeout(() => w.remove(), 2000);
   }
 
+  const cfg = EBULLET_CFG[type.cls];
+  const baseRate = cfg ? cfg.fireRate : 5000;
+  // Stagger initial fire so enemies don't all shoot at once
+  const initDelay = 1500 + Math.random() * 2000;
+
   S.enemies.push({
     el, x, y: -50,
     speed: S.eSpeed * type.speed + Math.random() * 0.1,
-    hp: hpVal, maxHp: hpVal, alive: true, type: type.cls
+    hp: hpVal, maxHp: hpVal, alive: true, type: type.cls,
+    fireTimer: initDelay,
+    fireRate: Math.max(800, baseRate - (S.level - 1) * 80), // gets faster each level
   });
   S.eSpawned++;
 }
 
-function fireBullet(target) {
+function fireBullet(nearest) {
   const rect = ga.getBoundingClientRect();
   const bx = rect.width / 2, by = rect.height - 10;
-  const ex = target.x + 30, ey = target.y + 20;
+  const t = nearest.target;
+  // Aim at center of target — enemy bullets are smaller so aim at their center
+  const ex = nearest.isBullet ? t.x + 2 : t.x + 30;
+  const ey = nearest.isBullet ? t.y + 8  : t.y + 20;
   SFX.shoot();
-  // Muzzle flash
-  const mz = document.createElement('div');
-  mz.className = 'muzzle-flash';
-  $('base').appendChild(mz);
-  setTimeout(() => mz.remove(), 150);
-  const fl = document.createElement('div');
-  fl.className = 'screen-flash';
-  $('gc').appendChild(fl);
-  setTimeout(() => fl.remove(), 200);
   barrel.style.transform = 'translateX(-50%) scaleY(0.7)';
   setTimeout(() => barrel.style.transform = 'translateX(-50%) scaleY(1)', 80);
 
@@ -1118,19 +1238,36 @@ function fireBullet(target) {
   const sp = 14, vx = (dx / dist) * sp, vy = (dy / dist) * sp;
   const ang = Math.atan2(dy, dx) * (180 / Math.PI) + 90;
   bul.style.transform = `rotate(${ang}deg)`;
-  S.bullets.push({ el: bul, x: bx, y: by, vx, vy, target, alive: true });
+  // Store both enemy bullet target and enemy target separately
+  S.bullets.push({
+    el: bul, x: bx, y: by, vx, vy,
+    target: nearest.isBullet ? null : t,
+    ebTarget: nearest.isBullet ? t : null,
+    alive: true
+  });
 }
 
 function findNearest() {
   const rect = ga.getBoundingClientRect();
   const bx = rect.width / 2, by = rect.height;
-  let best = null, bestD = Infinity;
+
+  // Priority 1: enemy bullets closest to base
+  let bestEB = null, bestEBD = Infinity;
+  for (const eb of S.enemyBullets) {
+    if (!eb.alive) continue;
+    const d = Math.sqrt((eb.x - bx) ** 2 + (eb.y - by) ** 2);
+    if (d < bestEBD) { bestEBD = d; bestEB = eb; }
+  }
+  if (bestEB) return { isBullet: true, target: bestEB };
+
+  // Priority 2: enemies closest to base
+  let bestE = null, bestED = Infinity;
   for (const e of S.enemies) {
     if (!e.alive) continue;
     const d = Math.sqrt((e.x - bx) ** 2 + (e.y - by) ** 2);
-    if (d < bestD) { bestD = d; best = e; }
+    if (d < bestED) { bestED = d; bestE = e; }
   }
-  return best;
+  return bestE ? { isBullet: false, target: bestE } : null;
 }
 
 function boom(x, y, big) {
@@ -1151,6 +1288,7 @@ function boom(x, y, big) {
 }
 
 function hurtBase() {
+  if (S.mode === 'free') return;
   S.hp -= 8 + S.level * 2;
   if (S.hp < 0) S.hp = 0;
   hpBar.style.width = (S.hp / S.maxHp * 100) + '%';
@@ -1195,7 +1333,9 @@ function onComplete(wordLen) {
 function handleInput(e) {
   if (e.key === 'Escape') return; // handled by document-level listener
   if (!S.running || S.lvlTrans || S.paused) return;
-  S.mode === 'words' ? handleWordInput(e) : handleSentInput(e);
+  if (S.mode === 'words') handleWordInput(e);
+  else if (S.mode === 'sentences') handleSentInput(e);
+  else handleFreeInput(e);
 }
 
 function handleWordInput(e) {
@@ -1205,11 +1345,17 @@ function handleWordInput(e) {
       S.typedN--;
       S.wordInput.pop();
       tt.textContent = S.wordInput.join('');
+      // If fully cleared, unlock the word so player can pick a different one
+      if (S.typedN === 0) {
+        S.activeIdx = -1;
+        S.wordInput = [];
+        tt.textContent = '';
+      }
       renderW();
     }
     return;
   }
-  if (k === ' ') { S.activeIdx = -1; S.typedN = 0; S.wordInput = []; tt.textContent = ''; renderW(); return; }
+  if (k === ' ' || k === 'Enter') { S.activeIdx = -1; S.typedN = 0; S.wordInput = []; tt.textContent = ''; renderW(); return; }
   if (k.length !== 1) return;
   SFX.key();
   S.totalChars++;
@@ -1249,6 +1395,174 @@ function handleWordInput(e) {
       if (S.doneWords.size >= S.words.length) pickWords();
     }
     // If has errors, player must backspace to fix
+  }
+}
+
+
+// ══════════════════════════════════════════════════════
+//  FREE MODE — mixed word + phrase flow
+// ══════════════════════════════════════════════════════
+const FREE_PHRASES = [
+  'push hard','stand firm','move fast','stay calm','think clear',
+  'brave soul','swift mind','dark path','bright flame','cold steel',
+  'rise up','dig deep','press on','hold on','let go',
+  'stand tall','forge ahead','face it','act now','time flies',
+  'bold move','stay sharp','keep going','break free','light speed',
+  'dead calm','iron will','true north','dark horse','deep cut',
+  'raw power','swift blow','long road','high noon','last stand',
+  'clear mind','strong arm','keen eye','fast hand','hard line',
+  'full force','open road','still water','cold fire','sharp edge',
+  'quiet storm','steady hand','burning bright','never yield','push through',
+  'rise and fall','hold the line','face the storm','stand your ground','press ever forward',
+  'into the dark','beyond the edge','against the tide','through the fire','out of time',
+];
+
+
+// ── FREE ZEN PASSAGES ──
+const FREE_LONG_PHRASES = [
+  'you can never cross the ocean unless you have the courage to lose sight of the shore',
+  'in the end it is not the years in your life that count but the life in your years',
+  'the secret of change is to focus all of your energy not on fighting the old but on building the new',
+  'do not go where the path may lead go instead where there is no path and leave a trail behind you',
+  'life shrinks or expands in proportion to one\'s courage and the willingness to face what is ahead',
+  'the two most powerful warriors are patience and time and together they can overcome anything in this world',
+  'we are all in the gutter but some of us are looking at the stars and dreaming of something greater',
+  'it is not the mountain we conquer but ourselves and that is the greatest victory of all in life',
+  'the mind is everything and what you think you become so choose your thoughts with great care each day',
+  'success is not final and failure is not fatal it is the courage to continue that truly counts',
+  'the only way to do great work is to love what you do and give it everything you have',
+  'two roads diverged in a wood and i took the one less traveled by and that has made all the difference',
+  'in three words i can sum up everything i have learned about life it goes on without pause',
+  'be the change that you wish to see in the world and do it with patience and great love',
+  'the journey of a thousand miles begins with a single step forward into the unknown and uncertain',
+  'you have brains in your head and feet in your shoes and you can steer yourself any direction you choose',
+  'it does not matter how slowly you go as long as you do not stop moving forward through the dark',
+  'strength does not come from physical capacity but from an indomitable will to keep going no matter what',
+  'the best time to plant a tree was twenty years ago and the second best time is right now today',
+  'every moment is a fresh beginning and a chance to set down what is heavy and start something true',
+  'a smooth sea never made a skilled sailor and the storm is where the real learning always begins',
+  'the people who are crazy enough to think they can change the world are the ones who actually do it',
+  'we must accept finite disappointment but we must never lose infinite hope for what is still possible',
+  'nothing in the world can take the place of persistence and talent will not succeed without it',
+  'what lies behind us and what lies before us are tiny matters compared to what lies within us now',
+  'the world is a book and those who do not travel read only one page of its many great stories',
+  'not all those who wander are lost and not all those who are quiet have nothing left to say',
+  'whether you think you can or you think you cannot you are right in either case so choose wisely',
+  'the measure of intelligence is the ability to change and grow and see things from a wider perspective',
+  'a person who never made a mistake never tried anything new and never learned what they were capable of',
+];
+
+function genFreePassage() {
+  const tier = Math.min(Math.ceil(S.level / 2), 5);
+  const sentPool = [];
+  for (let t = 1; t <= tier; t++) sentPool.push(...(SENTENCES[t] || []));
+  const allContent = [...sentPool, ...FREE_LONG_PHRASES];
+  const shuffled = [...allContent].sort(() => Math.random() - 0.5);
+  const count = 3 + Math.min(Math.floor(S.level / 2), 4); // 3–7 pieces
+  return shuffled.slice(0, count).join('. ') + '.';
+}
+
+function renderFreeZen() {
+  const fzt = document.getElementById('free-zen-text');
+  if (!fzt) return;
+  let h = '';
+  for (let i = 0; i < S.freeText.length; i++) {
+    const ch = S.freeText[i];
+    const esc = ch === '<' ? '&lt;' : ch === '>' ? '&gt;' : ch === '&' ? '&amp;' : ch;
+    if (i < S.freeIdx) {
+      const ok = (S.sentInput[i] || '') === ch;
+      h += `<span class="${ok ? 'ft' : 'te'}">${esc}</span>`;
+    } else if (i === S.freeIdx) {
+      h += `<span class="fcc" id="zen-cur">${esc}</span>`;
+    } else {
+      h += `<span class="fc">${esc}</span>`;
+    }
+  }
+  fzt.innerHTML = h;
+  // Slide text so cursor stays near top third
+  const cur = document.getElementById('zen-cur');
+  if (cur) {
+    const shift = Math.max(0, cur.offsetTop - fzt.clientHeight * 0.28);
+    fzt.style.transform = `translateY(-${shift}px)`;
+  }
+  // Progress
+  const wEl = document.getElementById('fzp-words');
+  const pEl = document.getElementById('fzp-pct');
+  if (wEl) {
+    const typed = S.freeIdx > 0 ? S.freeText.substring(0, S.freeIdx).trim().split(/\s+/).length : 0;
+    const total = S.freeText.trim().split(/\s+/).length;
+    wEl.textContent = `${typed} / ${total} WORDS`;
+  }
+  if (pEl) pEl.textContent = Math.round(S.freeIdx / Math.max(1, S.freeText.length) * 100) + '%';
+}
+
+const freeD = document.getElementById('free-d');
+
+function handleFreeInput(e) {
+  const k = e.key;
+  if (k === 'Backspace') {
+    if (S.freeIdx > 0) {
+      S.freeIdx--;
+      S.sentInput.pop();
+      renderFreeZen();
+      tt.textContent = S.sentInput.slice(-20).join('');
+    }
+    return;
+  }
+  if (k.length !== 1) return;
+  SFX.key();
+  S.totalChars++;
+  const expected = S.freeText[S.freeIdx];
+  const typed = k.toLowerCase();
+  S.sentInput.push(typed);
+  S.freeIdx++;
+
+  if (typed === expected) {
+    S.correctChars++;
+  } else {
+    SFX.err(); S.combo = 0; comboD.classList.remove('show');
+  }
+
+  tt.textContent = S.sentInput.slice(-20).join('');
+  renderFreeZen();
+
+  // Update WPM on HUD directly (no enemies, no bullets)
+  const fElapsed = (Date.now() - S.startTime - totalPaused) / 60000;
+  if (fElapsed > 0.05) wpmV.textContent = Math.round((S.correctChars / 5) / fElapsed);
+  if (S.totalChars > 0) accV.textContent = Math.round(S.correctChars / S.totalChars * 100) + '%';
+
+  // Passage complete
+  if (S.freeIdx >= S.freeText.length) {
+    const wordCount = S.freeText.trim().split(/\s+/).length;
+    const typos = S.sentInput.filter((c, i) => c !== (S.freeText[i] || '')).length;
+    const lvlMult = 1 + S.level * 0.1;
+    const bonus = Math.round((120 + wordCount * 18) * lvlMult);
+    const penalty = typos * 12;
+    const net = Math.max(0, bonus - penalty);
+    S.score += net;
+    sVal.textContent = S.score;
+    SFX.combo();
+
+    const pop = document.createElement('div');
+    pop.innerHTML = `<div style="color:var(--o);text-shadow:0 0 20px var(--glow)">PASSAGE COMPLETE &nbsp;+${net}</div>`
+      + (typos > 0 ? `<div style="color:#FF4444;font-size:12px;margin-top:4px;letter-spacing:3px">-${penalty} (${typos} TYPO${typos > 1 ? 'S' : ''})</div>` : '');
+    pop.style.cssText = 'position:absolute;top:38%;left:50%;transform:translate(-50%,-50%);font-family:Orbitron,sans-serif;font-size:16px;font-weight:900;letter-spacing:4px;text-align:center;z-index:85;pointer-events:none;animation:lvlShow 1.5s ease-out forwards;';
+    $('gc').appendChild(pop);
+    setTimeout(() => pop.remove(), 1500);
+
+    // Level advance after enough passages
+    S.freePassagesThisLevel = (S.freePassagesThisLevel || 0) + 1;
+    const passagesNeeded = 2 + Math.floor(S.level / 3);
+    if (S.freePassagesThisLevel >= passagesNeeded && !S.lvlTrans) {
+      setTimeout(nextLvl, 900);
+    } else {
+      // Just load next passage
+      S.freeText = genFreePassage();
+      S.freeIdx = 0; S.sentInput = [];
+      tt.textContent = '';
+      document.getElementById('free-zen-text').style.transform = '';
+      renderFreeZen();
+    }
   }
 }
 
@@ -1315,9 +1629,21 @@ function nextLvl() {
     else if (acc > .90) S.score += Math.round(S.score * .02);
     sVal.textContent = S.score;
   }
+
+  // Stage 10 cleared — game complete
+  if (S.level >= 10) {
+    gameComplete();
+    return;
+  }
+
   S.level++;
-  S.eSpeed += 0.05;
-  S.spawnInt = Math.max(700, S.spawnInt - 180);
+  if (S.mode === 'words') {
+    S.eSpeed += 0.018;                             // gentler speed ramp (-20%)
+    S.spawnInt = Math.max(1200, S.spawnInt - 96);  // slower spawn increase (-20%)
+  } else {
+    S.eSpeed += 0.025;                             // chronicles speed ramp
+    S.spawnInt = Math.max(1000, S.spawnInt - 100);
+  }
   planLevel(S.level);
   S.hp = Math.min(S.maxHp, S.hp + 15);
   hpBar.style.width = (S.hp / S.maxHp * 100) + '%';
@@ -1328,8 +1654,36 @@ function nextLvl() {
   lvlSub.textContent = subs[Math.min(S.level - 2, subs.length - 1)] || subs[subs.length - 1];
   lvlBan.className = 'show';
   SFX.lvlUp();
-  if (S.mode === 'words') pickWords(); else pickSent();
+  if (S.mode === 'words') pickWords();
+  else if (S.mode === 'sentences') pickSent();
+  else {
+    S.freeText = genFreePassage();
+    S.freeIdx = 0; S.sentInput = [];
+    S.freePassagesThisLevel = 0;
+    tt.textContent = '';
+    const fzt = document.getElementById('free-zen-text');
+    if (fzt) fzt.style.transform = '';
+    renderFreeZen();
+  }
   setTimeout(() => { lvlBan.className = ''; S.lvlTrans = false; }, 2500);
+}
+
+function gameComplete() {
+  S.running = false;
+  SFX.lvlUp();
+  setTimeout(() => SFX.lvlUp(), 400);
+  const elapsed = (Date.now() - S.startTime - totalPaused) / 60000;
+  const wpm = elapsed > .05 ? Math.round((S.correctChars / 5) / elapsed) : 0;
+  const acc = S.totalChars > 0 ? Math.round(S.correctChars / S.totalChars * 100) : 100;
+  fStats.textContent = `SCORE: ${S.score} | WPM: ${wpm} | ACC: ${acc}% | COMBO: x${S.maxCombo}`;
+  $('ov-title').textContent = 'TIMELINE SECURED';
+  $('start-btn').textContent = 'PLAY AGAIN';
+
+  $('name-score-show').textContent = `SCORE: ${S.score} | WPM: ${wpm} | ALL 10 LEVELS CLEARED`;
+  $('name-entry').classList.add('show');
+  $('name-input').value = '';
+  setTimeout(() => $('name-input').focus(), 100);
+  S._finalWpm = wpm;
 }
 
 function gameOver() {
@@ -1353,26 +1707,51 @@ function gameOver() {
 }
 
 function resetGame() {
-  ga.querySelectorAll('.enemy,.bullet,.particle').forEach(el => el.remove());
+  ga.querySelectorAll('.enemy,.bullet,.ebullet,.particle').forEach(el => el.remove());
   Object.assign(S, {
-    score: 0, level: 1, hp: 100, enemies: [], bullets: [], particles: [],
+    score: 0, level: 1, hp: 100, enemies: [], bullets: [], enemyBullets: [], particles: [],
     words: [], activeIdx: -1, typedN: 0, doneWords: new Set(),
-    sentence: '', sentIdx: 0, sentInput: [], wordInput: [], combo: 0, maxCombo: 0, wordsTyped: 0,
+    sentence: '', sentIdx: 0, sentInput: [], wordInput: [],
+    freeText: '', freeIdx: 0, freePassagesThisLevel: 0,
+    combo: 0, maxCombo: 0, wordsTyped: 0,
     totalChars: 0, correctChars: 0, startTime: Date.now(),
-    eSpeed: 0.3, spawnInt: 2000, lastSpawn: 0, lvlTrans: false,
+    eSpeed: S.mode === 'words' ? 0.32 : 0.25,
+    spawnInt: S.mode === 'words' ? 2200 : 2500,
+    lastSpawn: 0, lvlTrans: false,
   });
   planLevel(1);
   sVal.textContent = '0'; lVal.textContent = '1'; wpmV.textContent = '0'; accV.textContent = '100%';
   hpBar.style.width = '100%'; hpBar.style.background = 'var(--o)'; hpBar.style.boxShadow = '0 0 6px var(--glow)';
   comboD.classList.remove('show'); tt.textContent = '';
+
+  // Reset free-zen state for all modes
+  tPanel.style.display = '';
+  ga.style.bottom = '';
+  document.getElementById('base').style.display = '';
+  const fzEl = document.getElementById('free-zen');
+  fzEl.classList.remove('active');
+  const fztEl = document.getElementById('free-zen-text');
+  if (fztEl) { fztEl.innerHTML = ''; fztEl.style.transform = ''; }
+
   if (S.mode === 'words') {
-    wd.style.display = 'flex'; sd.style.display = 'none';
+    wd.style.display = 'flex'; sd.style.display = 'none'; freeD.style.display = 'none';
     tPanel.setAttribute('data-label', '▸ WORDS MODE ◂');
     pickWords();
-  } else {
-    wd.style.display = 'none'; sd.style.display = 'block';
+  } else if (S.mode === 'sentences') {
+    wd.style.display = 'none'; sd.style.display = 'block'; freeD.style.display = 'none';
     tPanel.setAttribute('data-label', '▸ CHRONICLES MODE ◂');
     pickSent();
+  } else {
+    // Free zen mode — no enemies, no type panel, centered passage display
+    wd.style.display = 'none'; sd.style.display = 'none'; freeD.style.display = 'none';
+    tPanel.style.display = 'none';
+    ga.style.bottom = '20px';
+    document.getElementById('base').style.display = 'none';
+    fzEl.classList.add('active');
+    S.freeText = genFreePassage();
+    S.freeIdx = 0; S.sentInput = [];
+    S.freePassagesThisLevel = 0;
+    renderFreeZen();
   }
 }
 
@@ -1423,7 +1802,12 @@ function goToMenu() {
   S.running = false;
   totalPaused = 0;
   $('pause-panel').classList.remove('show');
-  ga.querySelectorAll('.enemy,.bullet,.particle').forEach(el => el.remove());
+  ga.querySelectorAll('.enemy,.bullet,.ebullet,.particle').forEach(el => el.remove());
+  // Restore layout if returning from free zen mode
+  tPanel.style.display = '';
+  ga.style.bottom = '';
+  document.getElementById('base').style.display = '';
+  document.getElementById('free-zen').classList.remove('active');
   $('ov-title').textContent = 'TYPE TO SURVIVE';
   $('start-btn').textContent = 'INITIALIZE';
   fStats.textContent = '';
@@ -1439,9 +1823,13 @@ function loop() {
   const rect = ga.getBoundingClientRect();
   const maxY = rect.height - 30;
 
-  // Spawn
+  // Spawn — random batch size, grows with level
   if (!S.lvlTrans && now - S.lastSpawn > S.spawnInt && S.eSpawned < S.ePer) {
-    spawnEnemy(); S.lastSpawn = now;
+    const maxBatch = 1 + Math.floor(S.level / 2); // L1:1, L2-3:2, L4-5:3, L6-7:4, L8+:5
+    const batch = 1 + Math.floor(Math.random() * maxBatch);
+    const toSpawn = Math.min(batch, S.ePer - S.eSpawned);
+    for (let i = 0; i < toSpawn; i++) spawnEnemy();
+    S.lastSpawn = now;
   }
 
   // Enemies
@@ -1455,6 +1843,23 @@ function loop() {
       e.x += Math.sin(now * 0.001 + e.x) * 0.3;
     }
     e.el.style.top = e.y + 'px'; e.el.style.left = e.x + 'px';
+
+    // Enemy firing — only fire when on screen and bullet cap not reached
+    if (e.y > 0 && e.y < maxY - 40) {
+      e.fireTimer -= 16;
+      if (e.fireTimer <= 0) {
+        const bulletCap = S.mode === 'words'
+          ? 1 + Math.floor(S.level / 2)          // words: 1,2,2,3,3...
+          : 1 + Math.ceil(S.level * 0.6);         // chronicles/free: 2,2,3,3,4,4,5,5,6,7
+        const aliveBullets = S.enemyBullets.filter(eb => eb.alive).length;
+        if (aliveBullets < bulletCap) {
+          fireEnemyBullet(e, bulletCap);
+          if (sndOn && actx) SFX.enemyShoot();
+        }
+        e.fireTimer = e.fireRate;
+      }
+    }
+
     if (e.y >= maxY) {
       e.alive = false; e.el.classList.add('hit');
       setTimeout(() => e.el.remove(), 350);
@@ -1463,11 +1868,38 @@ function loop() {
     }
   }
 
-  // Bullets
+  // Player Bullets
   for (const b of S.bullets) {
     if (!b.alive) continue;
     b.x += b.vx; b.y += b.vy;
     b.el.style.left = b.x + 'px'; b.el.style.top = b.y + 'px';
+
+    // Check player bullet vs enemy bullets — both targeted and proximity sweep
+    let intercepted = false;
+    for (const eb of S.enemyBullets) {
+      if (!eb.alive) continue;
+      const ebW = eb.cls === 'boss' ? 10 : eb.cls === 'thick' ? 8 : eb.cls === 'medium' ? 4 : 2;
+      const dx = b.x - eb.x, dy = b.y - eb.y;
+      const hitRadius = (b.ebTarget === eb) ? 20 + ebW : 14 + ebW; // easier hit if aimed directly
+      if (Math.sqrt(dx * dx + dy * dy) < hitRadius) {
+        b.alive = false; b.el.remove();
+        eb.hp--;
+        if (eb.hp <= 0) {
+          eb.alive = false; eb.el.remove();
+          boom(eb.x, eb.y, false);
+          S.score += 5;
+          sVal.textContent = S.score;
+        } else {
+          updateEBulletPips(eb);
+          eb.el.style.filter = 'brightness(2.5)';
+          setTimeout(() => { if (eb.el) eb.el.style.filter = ''; }, 80);
+        }
+        intercepted = true;
+        break;
+      }
+    }
+    if (intercepted) continue;
+
     if (b.target && b.target.alive) {
       const dx = b.x - (b.target.x + 25), dy = b.y - (b.target.y + 20);
       if (Math.sqrt(dx * dx + dy * dy) < 28) {
@@ -1516,6 +1948,31 @@ function loop() {
     if (b.y < -20 || b.x < -20 || b.x > rect.width + 20) { b.alive = false; b.el.remove(); }
   }
 
+  // Enemy Bullets
+  for (const eb of S.enemyBullets) {
+    if (!eb.alive) continue;
+    eb.x += eb.vx; eb.y += eb.vy;
+    eb.el.style.left = eb.x + 'px'; eb.el.style.top = eb.y + 'px';
+    // Hit base
+    if (eb.y >= maxY) {
+      eb.alive = false; eb.el.remove();
+      // Enemy bullet deals less damage than enemy reaching base
+      S.hp -= 3;
+      if (S.hp < 0) S.hp = 0;
+      hpBar.style.width = (S.hp / S.maxHp * 100) + '%';
+      if (S.hp < 30) { hpBar.style.background = '#FF4444'; hpBar.style.boxShadow = '0 0 8px rgba(255,50,50,0.6)'; }
+      // Small red flash (distinct from the big orange damage flash)
+      const rf = document.createElement('div');
+      rf.style.cssText = 'position:absolute;inset:0;background:#FF0000;opacity:0;pointer-events:none;z-index:90;animation:flash .15s ease-out';
+      $('gc').appendChild(rf);
+      setTimeout(() => rf.remove(), 150);
+      if (S.hp <= 0) gameOver();
+      continue;
+    }
+    // Off screen sides/top
+    if (eb.x < -10 || eb.x > rect.width + 10 || eb.y < -20) { eb.alive = false; eb.el.remove(); }
+  }
+
   // Particles
   for (const p of S.particles) {
     if (!p.alive) continue;
@@ -1527,6 +1984,7 @@ function loop() {
 
   S.enemies = S.enemies.filter(e => e.alive || e.el.parentNode);
   S.bullets = S.bullets.filter(b => b.alive);
+  S.enemyBullets = S.enemyBullets.filter(eb => eb.alive);
   S.particles = S.particles.filter(p => p.alive);
 
   // Word mode: level ends when all roster enemies spawned AND none alive
@@ -1538,17 +1996,150 @@ function loop() {
   requestAnimationFrame(loop);
 }
 
+
+// ══════════════════════════════════════════════════════
+//  THEME SYSTEM — GRID / TUNNEL / STARS
+// ══════════════════════════════════════════════════════
+const THEMES = ['GRID', 'TUNNEL', 'STARS'];
+let currentTheme = 0;
+let themeAnimId = null;
+
+const tunnelCanvas = document.getElementById('tunnel-canvas');
+const starCanvas   = document.getElementById('star-canvas');
+const tctx = tunnelCanvas.getContext('2d');
+const sctx = starCanvas.getContext('2d');
+const gridBg = document.getElementById('grid-bg');
+
+// Resize canvases to match game container
+function resizeThemeCanvases() {
+  const rect = document.getElementById('gc').getBoundingClientRect();
+  tunnelCanvas.width = starCanvas.width = rect.width;
+  tunnelCanvas.height = starCanvas.height = rect.height;
+}
+window.addEventListener('resize', resizeThemeCanvases);
+resizeThemeCanvases();
+
+// ── TUNNEL ──
+let tunnelT = 0;
+function drawTunnel() {
+  const W = tunnelCanvas.width, H = tunnelCanvas.height;
+  tctx.clearRect(0, 0, W, H);
+  const cx = W / 2, hy = H * 0.48;
+  tunnelT += 0.0022;
+  const NUM_LAYERS = 14, NUM_V = 12;
+
+  for (let i = 0; i < NUM_V; i++) {
+    const frac = i / (NUM_V - 1);
+    const nearX = frac * W;
+    const farX = cx + (frac - 0.5) * 60;
+    const alpha = 0.14 + 0.10 * (1 - Math.abs(frac - 0.5) * 2);
+    tctx.strokeStyle = `rgba(232,117,26,${alpha})`;
+    tctx.lineWidth = 0.6;
+    tctx.beginPath(); tctx.moveTo(nearX, H); tctx.lineTo(farX, hy); tctx.stroke();
+    const alpha2 = 0.10 + 0.07 * (1 - Math.abs(frac - 0.5) * 2);
+    tctx.strokeStyle = `rgba(232,117,26,${alpha2})`;
+    tctx.lineWidth = 0.5;
+    tctx.beginPath(); tctx.moveTo(nearX, 0); tctx.lineTo(farX, hy); tctx.stroke();
+  }
+
+  for (let i = 0; i < NUM_LAYERS; i++) {
+    const raw = ((i / NUM_LAYERS) + tunnelT) % 1;
+    const depth = Math.pow(raw, 2.0);
+    const y = hy + (H - hy) * depth;
+    const x0 = cx - (W * 0.5) * depth, x1 = cx + (W * 0.5) * depth;
+    tctx.strokeStyle = `rgba(232,117,26,${depth * 0.45 + 0.04})`;
+    tctx.lineWidth = 0.4 + depth * 1.0;
+    tctx.beginPath(); tctx.moveTo(x0, y); tctx.lineTo(x1, y); tctx.stroke();
+
+    const y2 = hy - hy * depth;
+    const x0c = cx - (W * 0.5) * depth, x1c = cx + (W * 0.5) * depth;
+    tctx.strokeStyle = `rgba(212,146,42,${depth * 0.32 + 0.03})`;
+    tctx.lineWidth = 0.3 + depth * 0.7;
+    tctx.beginPath(); tctx.moveTo(x0c, y2); tctx.lineTo(x1c, y2); tctx.stroke();
+  }
+
+  const grad = tctx.createRadialGradient(cx, hy, 0, cx, hy, 100);
+  grad.addColorStop(0, 'rgba(232,117,26,0.10)');
+  grad.addColorStop(1, 'rgba(232,117,26,0)');
+  tctx.fillStyle = grad;
+  tctx.beginPath(); tctx.arc(cx, hy, 100, 0, Math.PI * 2); tctx.fill();
+}
+
+// ── STARS ──
+let starsList = [];
+let starsInit = false;
+function initStars() {
+  const W = starCanvas.width, H = starCanvas.height;
+  const TINTS = ['255,255,255','232,213,180','255,255,255','232,117,26'];
+  starsList = Array.from({length: 200}, (_, i) => ({
+    x: Math.random() * W, y: Math.random() * H,
+    z: Math.random(),
+    size: 0.4 + Math.random() * 1.2,
+    twinkle: Math.random() * Math.PI * 2,
+    speed: 0.0002 + Math.random() * 0.0004,
+    tint: i % 18 === 0 ? TINTS[3] : i % 7 === 0 ? TINTS[1] : TINTS[0],
+  }));
+  starsInit = true;
+}
+
+function drawStars() {
+  const W = starCanvas.width, H = starCanvas.height;
+  if (!starsInit || starsList[0] && W !== starCanvas.width) initStars();
+  sctx.clearRect(0, 0, W, H);
+  for (const s of starsList) {
+    s.twinkle += s.speed * 60;
+    const twinkleAlpha = 0.04 * Math.sin(s.twinkle);
+    const alpha = Math.max(0.05, 0.15 + s.z * 0.45 + twinkleAlpha);
+    s.y += s.speed * 0.3;
+    if (s.y > H) { s.y = 0; s.x = Math.random() * W; }
+    sctx.beginPath();
+    sctx.arc(s.x, s.y, s.size * (0.5 + s.z * 0.5), 0, Math.PI * 2);
+    sctx.fillStyle = `rgba(${s.tint},${alpha.toFixed(3)})`;
+    sctx.fill();
+  }
+}
+
+// ── THEME LOOP ──
+function themeLoop() {
+  if (currentTheme === 1) drawTunnel();
+  if (currentTheme === 2) drawStars();
+  themeAnimId = requestAnimationFrame(themeLoop);
+}
+
+function applyTheme(idx) {
+  currentTheme = idx;
+  const name = THEMES[idx];
+  document.querySelectorAll('[id^="theme-tog"]').forEach(b => b.textContent = `THEME: ${name}`);
+  gridBg.style.display     = idx === 0 ? '' : 'none';
+  tunnelCanvas.classList.toggle('active', idx === 1);
+  starCanvas.classList.toggle('active',   idx === 2);
+  if (idx === 2 && !starsInit) initStars();
+  if (!themeAnimId) themeLoop();
+}
+
+function cycleTheme() {
+  applyTheme((currentTheme + 1) % THEMES.length);
+}
+
 // ══════════════════════════════════════════════════════
 //  EVENTS
 // ══════════════════════════════════════════════════════
+const HINTS = {
+  words: 'TYPE ANY WORD TO FIRE • DESTROY THREATS BEFORE THEY REACH BASE',
+  sentences: 'TYPE THE PASSAGE • DESTROY THREATS BEFORE THEY REACH BASE',
+  free: 'ZEN TYPING MODE • NO ENEMIES • JUST FLOW'
+};
 document.querySelectorAll('.mode-btn').forEach(b => {
   b.addEventListener('click', () => {
     document.querySelectorAll('.mode-btn').forEach(x => x.classList.remove('sel'));
     b.classList.add('sel'); S.mode = b.dataset.mode;
+    document.getElementById('ov-hint').textContent = HINTS[S.mode] || HINTS.words;
   });
 });
 
 sndTog.addEventListener('click', () => { sndOn = !sndOn; sndTog.textContent = `SOUND: ${sndOn ? 'ON' : 'OFF'}`; });
+document.getElementById('theme-tog-hud').addEventListener('click', cycleTheme);
+document.getElementById('theme-tog-overlay').addEventListener('click', cycleTheme);
 
 $('start-btn').addEventListener('click', () => {
   initAudio(); ov.classList.add('hidden');
