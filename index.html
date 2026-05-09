@@ -526,7 +526,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--dk);font-famil
 
 </div>
 
-<input id="hidden-input" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+<input id="hidden-input" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" inputmode="text" enterkeyhint="send" data-gramm="false" data-gramm_editor="false">
 
 <script>
 // ══════════════════════════════════════════════════════
@@ -2096,9 +2096,10 @@ const gridBg = document.getElementById('grid-bg');
 
 // Resize canvases to match game container
 function resizeThemeCanvases() {
-  const rect = document.getElementById('gc').getBoundingClientRect();
-  tunnelCanvas.width = starCanvas.width = rect.width;
-  tunnelCanvas.height = starCanvas.height = rect.height;
+  const w = window.innerWidth;
+  const h = lockedH || (window.visualViewport ? window.visualViewport.height : window.innerHeight);
+  tunnelCanvas.width = starCanvas.width = w;
+  tunnelCanvas.height = starCanvas.height = h;
 }
 window.addEventListener('resize', resizeThemeCanvases);
 resizeThemeCanvases();
@@ -2280,50 +2281,38 @@ hi.addEventListener('blur', () => { if (S.running && !S.paused) setTimeout(() =>
 const gameWrap = document.getElementById('gc');
 const appEl    = document.getElementById('app');
 
+// ── LOCK LAYOUT TO KEYBOARD-OPEN HEIGHT ON MOBILE ──
+// On first keyboard open, lock the height permanently so layout never resizes
+let lockedH = null;
+
+function applyLockedHeight(h) {
+  appEl.style.height    = h + 'px';
+  gameWrap.style.height = h + 'px';
+  resizeThemeCanvases();
+}
+
 function onViewportResize() {
   const vvh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
-  const vvw = window.visualViewport ? window.visualViewport.width  : window.innerWidth;
+  const isMobile = window.innerWidth <= 768;
 
-  // Apply height to root containers
-  appEl.style.height    = vvh + 'px';
-  gameWrap.style.height = vvh + 'px';
+  if (!isMobile) return; // desktop: let CSS handle everything
 
-  // Compact panel height when space is tight (keyboard open)
-  const isTight = vvh < 500;
-  const panelH  = isTight ? 90 : (vvw <= 768 ? 160 : 180);
-  const hudH    = isTight ? 24 : (vvw <= 768 ? 28  : 50);
-
-  tPanel.style.height = panelH + 'px';
-  document.getElementById('game-area').style.bottom = panelH + 'px';
-  document.getElementById('game-area').style.top    = hudH + 'px';
-
-  // Hide WPM/ACC/COMBO when really tight
-  const wpmEl = document.getElementById('wpm-d');
-  const accEl = document.getElementById('acc-d');
-  if (wpmEl) wpmEl.style.display = isTight ? 'none' : '';
-  if (accEl) accEl.style.display = isTight ? 'none' : '';
-
-  // Compact panel content size
-  if (isTight) {
-    tPanel.style.padding = '2px 10px 4px';
-    const wbEls = document.querySelectorAll('.wb');
-    wbEls.forEach(el => { el.style.fontSize = '11px'; el.style.padding = '1px 4px'; });
+  if (!lockedH) {
+    // First call — set initial height (full screen, no keyboard yet)
+    lockedH = vvh;
+    applyLockedHeight(lockedH);
+  } else if (vvh < lockedH - 100) {
+    // Keyboard opened — lock to this smaller height permanently
+    lockedH = vvh;
+    applyLockedHeight(lockedH);
   }
-
-  // Free zen box — vertically center in available space
-  const fzEl = document.getElementById('free-zen');
-  if (fzEl && fzEl.classList.contains('active')) {
-    const clipEl = document.getElementById('free-zen-clip');
-    if (clipEl) clipEl.style.height = Math.max(120, vvh * 0.42) + 'px';
-  }
+  // Keyboard closed (vvh grew) — do nothing, keep locked size
 }
 
 if (window.visualViewport) {
   window.visualViewport.addEventListener('resize', onViewportResize);
-  window.visualViewport.addEventListener('scroll', onViewportResize);
 }
 window.addEventListener('resize', onViewportResize);
-// Run once on load
 onViewportResize();
 
 // Init
