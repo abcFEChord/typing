@@ -201,7 +201,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--dk);font-famil
 .mode-desc{font-size:9px;color:var(--dim);letter-spacing:2px;margin-top:3px;font-family:'Share Tech Mono',monospace;text-align:center}
 #snd-tog{font-family:'Orbitron',sans-serif;font-size:8px;letter-spacing:2px;color:var(--dim);background:none;border:1px dotted var(--dim);padding:3px 8px;cursor:pointer;z-index:60;transition:all .2s}
 #snd-tog:hover{border-color:var(--o);color:var(--o)}
-#hud2{display:none}
 #menu-btn-hud{position:absolute;top:10px;right:14px;font-family:'Orbitron',sans-serif;font-size:8px;letter-spacing:2px;color:var(--dim);background:none;border:1px dotted var(--dim);padding:3px 8px;cursor:pointer;z-index:60;transition:all .2s}
 #menu-btn-hud:hover{border-color:var(--o);color:var(--o)}
 #theme-tog-overlay{font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:2px;color:var(--dim);background:none;border:1px dotted var(--dim);padding:4px 10px;cursor:pointer;transition:all .2s}
@@ -212,7 +211,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--dk);font-famil
 /* ── Leaderboard ── */
 #lb-btn{font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:3px;color:var(--amb);background:none;border:1px dotted var(--dim);padding:6px 0;width:300px;text-align:center;cursor:pointer;margin-top:4px;transition:all .2s}
 #lb-btn:hover{border-color:var(--o);color:var(--o)}
-#lb-panel{display:none;position:fixed;inset:0;background:rgba(10,10,8,0.96);z-index:550;flex-direction:column;align-items:center;justify-content:flex-start;padding:30px}
+#lb-panel{display:none;position:absolute;inset:0;background:rgba(10,10,8,0.96);z-index:550;flex-direction:column;align-items:center;justify-content:flex-start;padding:30px}
 #lb-panel.show{display:flex}
 #lb-panel h2{font-family:'Orbitron',sans-serif;font-size:18px;letter-spacing:6px;color:var(--o);margin-bottom:16px;text-shadow:0 0 20px var(--glow)}
 #lb-table{width:90%;max-width:500px;border-collapse:collapse}
@@ -223,7 +222,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--dk);font-famil
 #lb-close:hover{border-color:var(--o);color:var(--o)}
 
 /* ── Name entry ── */
-#name-entry{display:none;position:fixed;inset:0;background:rgba(10,10,8,0.96);z-index:560;flex-direction:column;align-items:center;justify-content:center;gap:12px}
+#name-entry{display:none;position:absolute;inset:0;background:rgba(10,10,8,0.96);z-index:560;flex-direction:column;align-items:center;justify-content:center;gap:12px}
 #name-entry.show{display:flex}
 #name-entry h2{font-family:'Orbitron',sans-serif;font-size:16px;letter-spacing:5px;color:var(--o);text-shadow:0 0 20px var(--glow)}
 #name-input{font-family:'Share Tech Mono',monospace;font-size:20px;letter-spacing:4px;color:var(--o);background:transparent;border:2px dotted var(--dim);padding:10px 20px;text-align:center;width:260px;outline:none;text-transform:uppercase}
@@ -270,14 +269,14 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--dk);font-famil
   /* Stats layout: COMBO under MENU left, WPM/ACC right */
   #wpm-d{top:68px;left:10px;right:auto;text-align:left}
   #wpm-v{font-size:14px}
-  #acc-d{top:92px;left:10px;right:auto;text-align:left}
+  #acc-d{top:90px;left:10px;right:auto;text-align:left}
   #acc-v{font-size:11px}
   #combo-d{top:68px;right:10px;left:auto;text-align:right;font-size:16px}
 
   /* Game area — full width, max height */
   #game-area{
-    top:60px;left:0;right:0;
-    bottom:162px;
+    top:118px;left:0;right:0;
+    bottom:160px;
   }
 
   /* Uniform typing panel height for all modes */
@@ -371,7 +370,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--dk);font-famil
 /* Landscape phones — maximize game area */
 @media(max-height:500px){
   #hud{top:0;padding:2px 8px}
-  #game-area{top:24px;bottom:112px}
+  #game-area{top:24px;bottom:110px}
   #type-panel{height:110px;padding:4px 10px 6px}
   #wpm-d,#acc-d,#combo-d{display:none}
   #free-zen-text{font-size:13px;max-height:55vh}
@@ -420,13 +419,13 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--dk);font-famil
 }
 @media(max-width:768px){
   #free-zen{width:94%;padding:16px 14px 12px;top:48%}
-  #free-zen-clip{overflow:visible}
+  #free-zen-clip{height:40vh}
   #free-zen-text{font-size:15px;line-height:1.8}
   #free-zen-prog{font-size:7px;margin-top:8px;padding-top:6px}
 }
 @media(max-height:500px){
   #free-zen{top:46%;padding:10px 14px 8px}
-  #free-zen-clip{overflow:visible}
+  #free-zen-clip{height:52vh}
   #free-zen-text{font-size:13px;line-height:1.7}
 }
 </style>
@@ -451,12 +450,9 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--dk);font-famil
     </div>
   </div>
 
-  <div id="hud2">
-    <div id="wpm-d"><span id="wpm-v">0</span><span class="stat-l">WPM</span></div>
-    <div id="acc-d"><span id="acc-v">100%</span><span class="stat-l">ACCURACY</span></div>
-    <div id="combo-d"><span class="stat-l">COMBO</span><span id="combo-v">x2</span></div>
-    <button id="menu-btn-hud">MENU</button>
-  </div>
+  <div id="wpm-d"><span id="wpm-v">0</span><span class="stat-l">WPM</span></div>
+  <div id="acc-d"><span id="acc-v">100%</span><span class="stat-l">ACCURACY</span></div>
+  <div id="combo-d"><span class="stat-l" style="text-align:right">COMBO</span><span id="combo-v">x2</span></div>
 
   <div id="game-area">
     <div id="base"><div class="turret-barrel" id="barrel"></div><div class="turret-body"></div></div>
@@ -478,6 +474,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--dk);font-famil
   <div id="lvl-ban"><div id="lvl-ban-t"></div><div id="lvl-sub"></div></div>
 
   <!-- ── OVERLAY ── -->
+  <button id="menu-btn-hud">MENU</button>
   <div id="overlay">
     <h2>▸ TEMPORAL DEFENSE SYSTEM ◂</h2>
     <h1 id="ov-title">TYPE TO SURVIVE</h1>
@@ -1554,7 +1551,7 @@ function renderFreeZen() {
   const fzt = document.getElementById('free-zen-text');
   if (!fzt) return;
 
-  // Render the full passage statically — no scrolling, no sliding window
+  // Render full passage statically — no scrolling, no sliding window
   let h = '';
   for (let i = 0; i < S.freeText.length; i++) {
     const ch = S.freeText[i];
@@ -1563,13 +1560,12 @@ function renderFreeZen() {
       const ok = (S.sentInput[i] || '') === ch;
       h += `<span class="${ok ? 'ft' : 'te'}">${esc}</span>`;
     } else if (i === S.freeIdx) {
-      h += `<span class="fcc" id="zen-cur">${esc}</span>`;
+      h += `<span class="fcc">${esc}</span>`;
     } else {
       h += `<span class="fc">${esc}</span>`;
     }
   }
   fzt.innerHTML = h;
-  fzt.style.transform = '';
 
   // Progress
   const wEl = document.getElementById('fzp-words');
@@ -1856,7 +1852,8 @@ function pauseGame() {
   S.paused = true;
   pausedAt = Date.now();
   hi.blur();
-  setTimeout(() => { hi.blur(); document.activeElement && document.activeElement.blur(); }, 50);
+  setTimeout(() => { if(document.activeElement) document.activeElement.blur(); }, 50);
+  hi.blur(); // dismiss keyboard on mobile
   // Show pause stats
   const el = (Date.now() - S.startTime - totalPaused) / 60000;
   const wpm = el > .05 ? Math.round((S.correctChars / 5) / el) : 0;
@@ -1900,8 +1897,6 @@ function goToMenu() {
   $('start-btn').textContent = 'INITIALIZE';
   fStats.textContent = '';
   ov.classList.remove('hidden');
-  document.getElementById('hud').style.visibility='hidden';
-  const h2=document.getElementById('hud2'); if(h2) h2.style.visibility='hidden';
 }
 
 // ══════════════════════════════════════════════════════
@@ -2236,8 +2231,6 @@ document.getElementById('theme-tog-pause').addEventListener('click', cycleTheme)
 
 $('start-btn').addEventListener('click', () => {
   initAudio(); ov.classList.add('hidden');
-  document.getElementById('hud').style.visibility='';
-  const h2b=document.getElementById('hud2'); if(h2b) h2b.style.visibility='';
   totalPaused = 0;
   resetGame(); S.running = true; hi.focus();
   lvlBanT.textContent = 'LEVEL 1'; lvlSub.textContent = 'DEFEND THE TIMELINE';
@@ -2283,52 +2276,60 @@ hi.addEventListener('input', () => { hi.value = ''; });
 hi.addEventListener('blur', () => { if (S.running && !S.paused) setTimeout(() => hi.focus(), 10); });
 
 // ══════════════════════════════════════════════════════
-//  VISUAL VIEWPORT — only shrinks game when keyboard opens on iOS
+//  VISUAL VIEWPORT — shrink game to fit above keyboard on iOS
 // ══════════════════════════════════════════════════════
 const gameWrap = document.getElementById('gc');
 const appEl    = document.getElementById('app');
 
 function onViewportResize() {
   const vvh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+  const vvw = window.visualViewport ? window.visualViewport.width  : window.innerWidth;
 
-  // Only adjust when keyboard is open (tight space)
-  // Let CSS handle everything else
+  // Apply height to root containers
   appEl.style.height    = vvh + 'px';
   gameWrap.style.height = vvh + 'px';
 
+  // Compact panel height when space is tight (keyboard open)
   const isTight = vvh < 500;
+  const panelH  = isTight ? 90 : (vvw <= 768 ? 160 : 180);
+  const hudH    = isTight ? 24 : (vvw <= 768 ? 28  : 50);
+
+  tPanel.style.height = panelH + 'px';
+  document.getElementById('game-area').style.bottom = panelH + 'px';
+  document.getElementById('game-area').style.top    = hudH + 'px';
+
+  // Hide WPM/ACC/COMBO when really tight
+  const wpmEl = document.getElementById('wpm-d');
+  const accEl = document.getElementById('acc-d');
+  if (wpmEl) wpmEl.style.display = isTight ? 'none' : '';
+  if (accEl) accEl.style.display = isTight ? 'none' : '';
+
+  // Compact panel content size
   if (isTight) {
-    // Keyboard is open — compact everything
-    tPanel.style.height = '90px';
     tPanel.style.padding = '2px 10px 4px';
-    document.getElementById('game-area').style.bottom = '92px';
-    document.getElementById('game-area').style.top    = '24px';
-    document.getElementById('wpm-d').style.display = 'none';
-    document.getElementById('acc-d').style.display = 'none';
-  } else {
-    // Keyboard closed — let CSS take over
-    tPanel.style.height = '';
-    tPanel.style.padding = '';
-    document.getElementById('game-area').style.bottom = '';
-    document.getElementById('game-area').style.top    = '';
-    document.getElementById('wpm-d').style.display = '';
-    document.getElementById('acc-d').style.display = '';
+    const wbEls = document.querySelectorAll('.wb');
+    wbEls.forEach(el => { el.style.fontSize = '11px'; el.style.padding = '1px 4px'; });
+  }
+
+  // Free zen box — vertically center in available space
+  const fzEl = document.getElementById('free-zen');
+  if (fzEl && fzEl.classList.contains('active')) {
+    const clipEl = document.getElementById('free-zen-clip');
+    if (clipEl) clipEl.style.height = Math.max(120, vvh * 0.42) + 'px';
   }
 }
 
 if (window.visualViewport) {
   window.visualViewport.addEventListener('resize', onViewportResize);
+  window.visualViewport.addEventListener('scroll', onViewportResize);
 }
 window.addEventListener('resize', onViewportResize);
+// Run once on load
+onViewportResize();
 
 // Init
 loadLB();
 loop();
-// Hide HUD on initial overlay
-document.getElementById('hud').style.visibility='hidden';
-document.getElementById('wpm-d').style.visibility='hidden';
-document.getElementById('acc-d').style.visibility='hidden';
-document.getElementById('menu-btn-hud').style.visibility='hidden';
 </script>
 </body>
 </html>
