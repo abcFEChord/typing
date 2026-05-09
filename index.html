@@ -19,9 +19,9 @@
 html,body{width:100%;height:100%;overflow:hidden;background:var(--dk);font-family:'Share Tech Mono',monospace;color:var(--txt)}
 
 /* ── LAYOUT ── */
-#app{display:flex;width:100vw;height:100vh;overflow:hidden}
+#app{display:flex;width:100vw;height:100vh;height:100dvh;overflow:hidden}
 #game-wrap{flex:1;position:relative;overflow:hidden;min-width:0}
-#gc{width:100%;height:100%;position:relative;overflow:hidden;
+#gc{width:100%;height:100%;height:100dvh;position:relative;overflow:hidden;
   background:
     repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(232,117,26,0.03) 2px,rgba(232,117,26,0.03) 4px),
     radial-gradient(ellipse at center,#1A1610 0%,var(--dk) 70%);
@@ -2095,13 +2095,9 @@ const sctx = starCanvas.getContext('2d');
 const gridBg = document.getElementById('grid-bg');
 
 // Resize canvases to match game container
-let lockedH = null;
-
 function resizeThemeCanvases() {
-  const w = window.innerWidth;
-  const h = lockedH || (window.visualViewport ? window.visualViewport.height : window.innerHeight);
-  tunnelCanvas.width = starCanvas.width = w;
-  tunnelCanvas.height = starCanvas.height = h;
+  tunnelCanvas.width = starCanvas.width = window.innerWidth;
+  tunnelCanvas.height = starCanvas.height = window.innerHeight;
 }
 window.addEventListener('resize', resizeThemeCanvases);
 
@@ -2277,44 +2273,17 @@ hi.addEventListener('input', () => { hi.value = ''; });
 hi.addEventListener('blur', () => { if (S.running && !S.paused) setTimeout(() => hi.focus(), 10); });
 
 // ══════════════════════════════════════════════════════
-//  VISUAL VIEWPORT — shrink game to fit above keyboard on iOS
+//  CANVAS RESIZE ONLY — layout is handled entirely by CSS
 // ══════════════════════════════════════════════════════
 const gameWrap = document.getElementById('gc');
 const appEl    = document.getElementById('app');
 
-// ── LOCK LAYOUT TO KEYBOARD-OPEN HEIGHT ON MOBILE ──
-// On first keyboard open, lock the height permanently so layout never resizes
-
-function applyLockedHeight(h) {
-  appEl.style.height    = h + 'px';
-  gameWrap.style.height = h + 'px';
-  resizeThemeCanvases();
+function resizeThemeCanvases() {
+  tunnelCanvas.width = starCanvas.width = gameWrap.offsetWidth;
+  tunnelCanvas.height = starCanvas.height = gameWrap.offsetHeight;
 }
-
-function onViewportResize() {
-  const vvh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
-  const isMobile = window.innerWidth <= 768;
-
-  if (!isMobile) return; // desktop: let CSS handle everything
-
-  if (!lockedH) {
-    // First call — set initial height (full screen, no keyboard yet)
-    lockedH = vvh;
-    applyLockedHeight(lockedH);
-  } else if (vvh < lockedH - 100) {
-    // Keyboard opened — lock to this smaller height permanently
-    lockedH = vvh;
-    applyLockedHeight(lockedH);
-  }
-  // Keyboard closed (vvh grew) — do nothing, keep locked size
-}
-
-if (window.visualViewport) {
-  window.visualViewport.addEventListener('resize', onViewportResize);
-}
-window.addEventListener('resize', onViewportResize);
-onViewportResize();
-resizeThemeCanvases();
+window.addEventListener('resize', resizeThemeCanvases);
+setTimeout(resizeThemeCanvases, 100); // after layout settles
 
 // Init
 loadLB();
