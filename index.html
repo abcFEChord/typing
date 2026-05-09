@@ -266,16 +266,19 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--dk);font-famil
   #title-badge{font-size:8px;letter-spacing:2px;padding:2px 6px}
   #hp-bar-c{width:60px;height:5px}
 
-  /* Stats layout: COMBO under MENU left, WPM/ACC right */
-  #wpm-d{top:68px;left:10px;right:auto;text-align:left}
-  #wpm-v{font-size:14px}
-  #acc-d{top:90px;left:10px;right:auto;text-align:left}
-  #acc-v{font-size:11px}
-  #combo-d{top:68px;right:10px;left:auto;text-align:right;font-size:16px}
+  /* Stats row — below HUD, left side */
+  #wpm-d{top:36px;left:10px;right:auto;text-align:left;
+    background:rgba(10,10,8,0.85);padding:2px 8px;border-radius:2px}
+  #wpm-v{font-size:16px;color:var(--o)}
+  #acc-d{top:62px;left:10px;right:auto;text-align:left;
+    background:rgba(10,10,8,0.85);padding:2px 8px;border-radius:2px}
+  #acc-v{font-size:13px;color:var(--gold)}
+  #combo-d{top:36px;right:10px;left:auto;text-align:right;font-size:18px}
+  #menu-btn-hud{top:6px;right:10px;font-size:7px;padding:2px 6px}
 
   /* Game area — full width, max height */
   #game-area{
-    top:118px;left:0;right:0;
+    top:90px;left:0;right:0;
     bottom:160px;
   }
 
@@ -2326,6 +2329,30 @@ if (window.visualViewport) {
 window.addEventListener('resize', onViewportResize);
 // Run once on load
 onViewportResize();
+
+
+// ── MOBILE: lock layout to keyboard-open height ──
+if (window.visualViewport && window.innerWidth <= 768) {
+  const gc = document.getElementById('gc');
+  const app = document.getElementById('app');
+  let heightLocked = false;
+
+  function lockToKeyboard() {
+    const vvh = window.visualViewport.height;
+    // When keyboard is open vvh shrinks — lock to that smaller height
+    app.style.height = vvh + 'px';
+    gc.style.height  = vvh + 'px';
+    if (vvh < window.innerHeight * 0.8) heightLocked = true;
+  }
+
+  window.visualViewport.addEventListener('resize', () => {
+    const vvh = window.visualViewport.height;
+    // Only shrink, never grow once locked
+    if (!heightLocked || vvh < parseInt(app.style.height || window.innerHeight)) {
+      lockToKeyboard();
+    }
+  });
+}
 
 // Init
 loadLB();
