@@ -53,27 +53,27 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--dk);font-famil
 #acc-v{font-size:14px;font-weight:700;color:var(--gold)}
 
 /* ── Game canvas ── */
-#game-area{position:absolute;top:50px;left:16px;right:16px;bottom:188px;overflow:hidden}
+#game-area{position:absolute;top:50px;left:16px;right:16px;bottom:228px;overflow:hidden}
 #base{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:60px;height:30px;z-index:40}
 .turret-body{width:60px;height:14px;background:var(--o);border:1px solid var(--amb);border-radius:2px 2px 0 0;position:absolute;bottom:0;}
 .turret-barrel{width:3px;height:12px;background:var(--amb);position:absolute;bottom:14px;left:50%;transform:translateX(-50%);transition:transform .05s}
 
 /* ── Typing panel ── */
 #type-panel{
-  position:absolute;bottom:0;left:0;right:0;height:180px;
+  position:absolute;bottom:0;left:0;right:0;height:220px;
   background:linear-gradient(180deg,rgba(20,20,16,0.97),rgba(10,10,8,0.99));
   border-top:2px dotted var(--dim);z-index:60;
   display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 30px;
 }
 #type-panel::before{content:attr(data-label);position:absolute;top:5px;font-family:'Orbitron',sans-serif;font-size:7px;letter-spacing:4px;color:var(--dim)}
 
-#words-d{display:flex;flex-wrap:wrap;gap:8px 16px;justify-content:center;max-width:960px;padding:6px 0;min-height:80px;max-height:110px;align-items:center;overflow:hidden}
+#words-d{display:flex;flex-wrap:wrap;gap:8px 16px;justify-content:center;max-width:960px;padding:6px 0;min-height:80px;max-height:130px;align-items:center;overflow:hidden}
 .wb{font-size:22px;letter-spacing:2px;padding:4px 10px;border:1px dotted var(--dim);color:var(--dim);transition:all .15s;text-transform:uppercase;cursor:default;white-space:nowrap}
 .wb.active{border-color:var(--o);color:var(--txt);box-shadow:0 0 12px rgba(232,117,26,0.3)}
 .wb .tp{color:var(--o);text-shadow:0 0 8px var(--glow)}.wb .te{color:#FF4444;text-shadow:0 0 6px rgba(255,50,50,0.5)}
 .wb.done{border-color:transparent;color:transparent;transform:scale(0.8);opacity:0;transition:all .3s ease-out;pointer-events:none}
 
-#sent-d{font-size:22px;letter-spacing:1px;width:62ch;max-width:92%;text-align:left;line-height:1.8;padding:4px 0;min-height:80px;max-height:110px;overflow:hidden;color:var(--dim);display:none;word-wrap:break-word;overflow-wrap:break-word}
+#sent-d{font-size:22px;letter-spacing:1px;width:62ch;max-width:92%;text-align:left;line-height:1.8;padding:4px 0;min-height:80px;max-height:130px;overflow:hidden;color:var(--dim);display:none;word-wrap:break-word;overflow-wrap:break-word}
 #free-d{display:none;width:100%;max-width:900px;height:42px;overflow:hidden;position:relative;align-items:center}
 #free-inner{position:absolute;white-space:nowrap;font-size:20px;letter-spacing:3px;font-family:'Share Tech Mono',monospace;transition:transform 0.05s linear;text-transform:uppercase}
 .fc{color:var(--dim)}.ft{color:var(--o);text-shadow:0 0 6px rgba(232,117,26,0.5)}.fcc{color:var(--txt);border-bottom:2px solid var(--o)}
@@ -281,7 +281,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--dk);font-famil
 
   /* Uniform typing panel height for all modes */
   #type-panel{
-    height:160px;padding:6px 10px 10px;
+    height:200px;padding:8px 10px 12px;
   }
   #type-panel::before{font-size:6px;top:3px;letter-spacing:2px}
 
@@ -290,7 +290,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--dk);font-famil
   .wb{font-size:18px;letter-spacing:1px;padding:3px 6px;white-space:nowrap}
 
   /* Chronicles mode */
-  #sent-d{font-size:18px;width:100%;max-width:100%;line-height:1.6;min-height:56px;max-height:90px}
+  #sent-d{font-size:18px;width:100%;max-width:100%;line-height:1.6;min-height:56px;max-height:120px}
 
   /* Input display */
   #input-show{font-size:10px;height:18px;padding:2px 8px;min-width:120px;margin-top:4px}
@@ -371,7 +371,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--dk);font-famil
 @media(max-height:500px){
   #hud{top:0;padding:2px 8px}
   #game-area{top:24px;bottom:110px}
-  #type-panel{height:110px;padding:4px 10px 6px}
+  #type-panel{height:130px;padding:4px 10px 6px}
   #wpm-d,#acc-d,#combo-d{display:none}
   #free-zen-text{font-size:13px;max-height:55vh}
   #free-zen{top:46%;padding:10px 14px 8px}
@@ -392,41 +392,39 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--dk);font-famil
 /* ── FREE ZEN MODE ── */
 #free-zen{
   display:none;position:absolute;
-  top:50%;left:50%;transform:translate(-50%,-50%);
-  width:min(84%,760px);z-index:60;
-  padding:28px 36px 22px;
-  background:rgba(10,10,8,0.92);
-  border:1px dotted var(--dim);
-  box-shadow:0 0 60px rgba(0,0,0,0.5),0 0 30px rgba(232,117,26,0.04);
+  bottom:0;left:0;right:0;
+  height:220px;
+  padding:12px 30px;
+  z-index:60;
+  background:linear-gradient(180deg,rgba(20,20,16,0.97),rgba(10,10,8,0.99));
+  border-top:2px dotted var(--dim);
   overflow:hidden;
+  flex-direction:column;align-items:center;justify-content:center;
 }
-#free-zen.active{display:block}
+#free-zen.active{display:flex}
 #free-zen-label{
   font-family:'Orbitron',sans-serif;font-size:7px;letter-spacing:4px;
-  color:rgba(107,94,62,0.4);display:block;margin-top:12px;text-align:center;
-  border-top:1px dotted rgba(107,94,62,0.2);padding-top:8px;
+  color:rgba(107,94,62,0.4);position:absolute;top:5px;left:50%;transform:translateX(-50%);
 }
-#free-zen-clip{overflow:visible;position:relative}
+#free-zen-clip{overflow:visible;position:relative;width:100%;max-width:960px}
 #free-zen-text{
-  font-family:'Share Tech Mono',monospace;font-size:20px;
-  line-height:2.05;letter-spacing:0.4px;word-break:break-word;
-  position:relative;
+  font-family:'Share Tech Mono',monospace;font-size:22px;
+  line-height:1.8;letter-spacing:0.4px;word-break:break-word;
+  color:var(--dim);width:100%;
 }
 #free-zen-prog{
   font-family:'Orbitron',sans-serif;font-size:8px;letter-spacing:3px;
   color:var(--dim);display:flex;justify-content:space-between;
-  margin-top:14px;border-top:1px dotted rgba(107,94,62,0.25);padding-top:10px;
+  margin-top:8px;width:100%;max-width:960px;
 }
 @media(max-width:768px){
-  #free-zen{width:94%;padding:16px 14px 12px;top:48%}
-  #free-zen-clip{height:40vh}
-  #free-zen-text{font-size:15px;line-height:1.8}
-  #free-zen-prog{font-size:7px;margin-top:8px;padding-top:6px}
+  #free-zen{height:200px;padding:8px 10px 12px}
+  #free-zen-text{font-size:18px;line-height:1.6}
+  #free-zen-prog{font-size:7px;margin-top:4px}
 }
 @media(max-height:500px){
-  #free-zen{top:46%;padding:10px 14px 8px}
-  #free-zen-clip{height:52vh}
-  #free-zen-text{font-size:13px;line-height:1.7}
+  #free-zen{height:130px;padding:4px 10px 6px}
+  #free-zen-text{font-size:13px;line-height:1.5}
 }
 </style>
 </head>
@@ -1824,12 +1822,13 @@ function resetGame() {
     tPanel.setAttribute('data-label', '▸ CHRONICLES MODE ◂');
     pickSent();
   } else {
-    // Free zen mode — no enemies, no type panel, centered passage display
+    // Free zen mode — no enemies, free-zen box at bottom same as type panel
     wd.style.display = 'none'; sd.style.display = 'none'; freeD.style.display = 'none';
     tPanel.style.display = 'none';
-    ga.style.bottom = '20px';
+    ga.style.bottom = '';
     document.getElementById('base').style.display = 'none';
     fzEl.classList.add('active');
+    fzEl.setAttribute('data-label', '▸ FREE FLOW ◂');
     S.freeText = genFreePassage();
     S.freeIdx = 0; S.sentInput = [];
     S.freePassagesThisLevel = 0;
