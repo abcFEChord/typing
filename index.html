@@ -68,12 +68,12 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--dk);font-famil
 #type-panel::before{content:attr(data-label);position:absolute;top:5px;font-family:'Orbitron',sans-serif;font-size:7px;letter-spacing:4px;color:var(--dim)}
 
 #words-d{display:flex;flex-wrap:wrap;gap:8px 16px;justify-content:center;max-width:960px;padding:6px 0;min-height:80px;max-height:110px;align-items:center;overflow:hidden}
-.wb{font-size:22px;letter-spacing:2px;padding:4px 10px;border:1px dotted var(--dim);color:var(--dim);transition:all .15s;text-transform:uppercase;cursor:default;white-space:nowrap}
+.wb{font-size:27px;letter-spacing:2px;padding:4px 10px;border:1px dotted var(--dim);color:var(--dim);transition:all .15s;text-transform:uppercase;cursor:default;white-space:nowrap}
 .wb.active{border-color:var(--o);color:var(--txt);box-shadow:0 0 12px rgba(232,117,26,0.3)}
 .wb .tp{color:var(--o);text-shadow:0 0 8px var(--glow)}.wb .te{color:#FF4444;text-shadow:0 0 6px rgba(255,50,50,0.5)}
 .wb.done{border-color:transparent;color:transparent;transform:scale(0.8);opacity:0;transition:all .3s ease-out;pointer-events:none}
 
-#sent-d{font-size:22px;letter-spacing:1px;width:62ch;max-width:92%;text-align:left;line-height:1.8;padding:4px 0;min-height:80px;max-height:110px;overflow:hidden;color:var(--dim);display:none;word-wrap:break-word;overflow-wrap:break-word}
+#sent-d{font-size:22px;letter-spacing:1px;width:62ch;max-width:92%;text-align:center;line-height:1.8;padding:4px 0;min-height:80px;max-height:110px;overflow:hidden;color:var(--dim);display:none;word-wrap:break-word;overflow-wrap:break-word}
 #free-d{display:none;width:100%;max-width:900px;height:42px;overflow:hidden;position:relative;align-items:center}
 #free-inner{position:absolute;white-space:nowrap;font-size:20px;letter-spacing:3px;font-family:'Share Tech Mono',monospace;transition:transform 0.05s linear;text-transform:uppercase}
 .fc{color:var(--dim)}.ft{color:var(--o);text-shadow:0 0 6px rgba(232,117,26,0.5)}.fcc{color:var(--txt);border-bottom:2px solid var(--o)}
@@ -258,27 +258,33 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--dk);font-famil
   #frame,#frame::before{display:none}
 
   /* HUD — slim single row */
-  #hud{top:0;left:0;right:0;padding:4px 10px;
-    background:rgba(10,10,8,0.9);border-bottom:1px dotted var(--dim);
-    z-index:60}
+  #hud{position:fixed;top:0;left:0;right:0;padding:4px 10px;
+    background:rgba(10,10,8,0.95);border-bottom:1px dotted var(--dim);
+    z-index:200}
   .hud-v{font-size:13px;min-width:28px}
   .hud-l{font-size:6px}
   #title-badge{font-size:8px;letter-spacing:2px;padding:2px 6px}
   #hp-bar-c{width:60px;height:5px}
 
-  /* Stats row — below HUD, left side */
-  #wpm-d{top:36px;left:10px;right:auto;text-align:left;
-    background:rgba(10,10,8,0.85);padding:2px 8px;border-radius:2px}
-  #wpm-v{font-size:16px;color:var(--o)}
-  #acc-d{top:62px;left:10px;right:auto;text-align:left;
-    background:rgba(10,10,8,0.85);padding:2px 8px;border-radius:2px}
-  #acc-v{font-size:13px;color:var(--gold)}
-  #combo-d{top:36px;right:10px;left:auto;text-align:right;font-size:18px}
-  #menu-btn-hud{top:6px;right:10px;font-size:7px;padding:2px 6px}
+  /* Stats row — second HUD row, fully visible */
+  #wpm-d{position:fixed;top:30px;left:0;right:auto;
+    background:rgba(10,10,8,0.95);padding:3px 10px;z-index:200;
+    border-bottom:1px dotted rgba(107,94,62,0.3);border-right:1px dotted rgba(107,94,62,0.3)}
+  #wpm-v{font-size:16px;color:var(--o);font-weight:700}
+  #acc-d{position:fixed;top:30px;left:80px;right:auto;
+    background:rgba(10,10,8,0.95);padding:3px 10px;z-index:200;
+    border-bottom:1px dotted rgba(107,94,62,0.3);border-right:1px dotted rgba(107,94,62,0.3)}
+  #acc-v{font-size:13px;color:var(--gold);font-weight:700}
+  #combo-d{position:fixed;top:30px;right:80px;left:auto;text-align:right;font-size:16px;z-index:200;
+    background:rgba(10,10,8,0.95);padding:3px 8px;
+    border-bottom:1px dotted rgba(107,94,62,0.3);border-left:1px dotted rgba(107,94,62,0.3)}
+  #menu-btn-hud{position:fixed;top:30px;right:0;font-size:7px;padding:3px 10px;z-index:200;
+    background:rgba(10,10,8,0.95);
+    border-bottom:1px dotted rgba(107,94,62,0.3);border-left:1px dotted rgba(107,94,62,0.3)}
 
-  /* Game area — full width, max height */
+  /* Game area — starts below 2-row HUD */
   #game-area{
-    top:90px;left:0;right:0;
+    top:55px;left:0;right:0;
     bottom:160px;
   }
 
@@ -290,10 +296,10 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--dk);font-famil
 
   /* Words mode */
   #words-d{gap:5px 10px;max-width:100%;padding:4px 0;min-height:56px;max-height:90px}
-  .wb{font-size:18px;letter-spacing:1px;padding:3px 6px;white-space:nowrap}
+  .wb{font-size:22px;letter-spacing:1px;padding:3px 6px;white-space:nowrap}
 
   /* Chronicles mode */
-  #sent-d{font-size:18px;width:100%;max-width:100%;line-height:1.6;min-height:56px;max-height:90px}
+  #sent-d{font-size:18px;width:100%;max-width:100%;line-height:1.6;min-height:56px;max-height:90px;text-align:center}
 
   /* Input display */
   #input-show{font-size:10px;height:18px;padding:2px 8px;min-width:120px;margin-top:4px}
@@ -350,7 +356,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--dk);font-famil
   #free-zen-prog{font-size:7px;margin-top:8px;padding-top:6px}
 
   /* Tap prompt */
-  #tap-prompt{bottom:130px;font-size:8px}
 
   /* LB panel */
   #lb-table{font-size:11px}
@@ -364,7 +369,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--dk);font-famil
 @media(max-width:480px){
   #title-badge{display:none}
   #hud{justify-content:space-between}
-  .wb{font-size:12px;padding:2px 4px}
+  .wb{font-size:15px;padding:2px 4px}
   #sent-d{font-size:12px}
   #free-zen-text{font-size:13px;max-height:44vh}
   #overlay h1{font-size:18px;letter-spacing:4px}
@@ -381,21 +386,12 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--dk);font-famil
 }
 
 /* Tap-to-type prompt for touch devices */
-#tap-prompt{
-  display:none;position:absolute;bottom:155px;left:50%;
-  transform:translateX(-50%);
-  font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:3px;
-  color:var(--o);z-index:62;animation:blink .8s step-end infinite;
-  pointer-events:none;
-}
-@media(hover:none){
-  #tap-prompt{display:block}
-}
+
 
 /* ── FREE ZEN MODE ── */
 #free-zen{
   display:none;position:absolute;
-  top:50%;left:50%;transform:translate(-50%,-50%);
+  top:calc(50% + 25px);left:50%;transform:translate(-50%,-50%);
   width:min(84%,760px);z-index:60;
   padding:28px 36px 22px;
   background:rgba(10,10,8,0.92);
@@ -421,7 +417,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--dk);font-famil
   margin-top:14px;border-top:1px dotted rgba(107,94,62,0.25);padding-top:10px;
 }
 @media(max-width:768px){
-  #free-zen{width:94%;padding:16px 14px 12px;top:48%}
+  #free-zen{width:94%;padding:16px 14px 12px;top:calc(48% + 25px)}
   #free-zen-clip{height:40vh}
   #free-zen-text{font-size:15px;line-height:1.8}
   #free-zen-prog{font-size:7px;margin-top:8px;padding-top:6px}
@@ -466,7 +462,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--dk);font-famil
     </div>
   </div>
 
-  <div id="tap-prompt">TAP SCREEN TO TYPE</div>
   <div id="type-panel" data-label="▸ TYPE TO FIRE ◂">
     <div id="words-d"></div>
     <div id="sent-d"></div>
@@ -2273,10 +2268,10 @@ $('name-input').addEventListener('keydown', e => {
 });
 
 document.addEventListener('click', () => { if (S.running && !S.paused) hi.focus(); });
-document.addEventListener('touchstart', () => { if (S.running && !S.paused) hi.focus(); });
+document.addEventListener('touchstart', (e) => { if (S.running && !S.paused) { hi.focus({preventScroll:true}); } });
 hi.addEventListener('keydown', handleInput);
 hi.addEventListener('input', () => { hi.value = ''; });
-hi.addEventListener('blur', () => { if (S.running && !S.paused) setTimeout(() => hi.focus(), 10); });
+hi.addEventListener('blur', () => { if (S.running && !S.paused) setTimeout(() => hi.focus({preventScroll:true}), 50); });
 
 // ══════════════════════════════════════════════════════
 //  VISUAL VIEWPORT — shrink game to fit above keyboard on iOS
