@@ -2277,56 +2277,6 @@ hi.addEventListener('blur', () => { if (S.running && !S.paused) setTimeout(() =>
 
 // ══════════════════════════════════════════════════════
 //  VISUAL VIEWPORT — shrink game to fit above keyboard on iOS
-// ══════════════════════════════════════════════════════
-const gameWrap = document.getElementById('gc');
-const appEl    = document.getElementById('app');
-
-function onViewportResize() {
-  const vvh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
-  const vvw = window.visualViewport ? window.visualViewport.width  : window.innerWidth;
-
-  // Apply height to root containers
-  appEl.style.height    = vvh + 'px';
-  gameWrap.style.height = vvh + 'px';
-
-  // Compact panel height when space is tight (keyboard open)
-  const isTight = vvh < 500;
-  const panelH  = isTight ? 90 : (vvw <= 768 ? 160 : 180);
-  const hudH    = isTight ? 24 : (vvw <= 768 ? 28  : 50);
-
-  tPanel.style.height = panelH + 'px';
-  document.getElementById('game-area').style.bottom = panelH + 'px';
-  document.getElementById('game-area').style.top    = hudH + 'px';
-
-  // Hide WPM/ACC/COMBO when really tight
-  const wpmEl = document.getElementById('wpm-d');
-  const accEl = document.getElementById('acc-d');
-  if (wpmEl) wpmEl.style.display = isTight ? 'none' : '';
-  if (accEl) accEl.style.display = isTight ? 'none' : '';
-
-  // Compact panel content size
-  if (isTight) {
-    tPanel.style.padding = '2px 10px 4px';
-    const wbEls = document.querySelectorAll('.wb');
-    wbEls.forEach(el => { el.style.fontSize = '11px'; el.style.padding = '1px 4px'; });
-  }
-
-  // Free zen box — vertically center in available space
-  const fzEl = document.getElementById('free-zen');
-  if (fzEl && fzEl.classList.contains('active')) {
-    const clipEl = document.getElementById('free-zen-clip');
-    if (clipEl) clipEl.style.height = Math.max(120, vvh * 0.42) + 'px';
-  }
-}
-
-if (window.visualViewport) {
-  window.visualViewport.addEventListener('resize', onViewportResize);
-  window.visualViewport.addEventListener('scroll', onViewportResize);
-}
-window.addEventListener('resize', onViewportResize);
-// Run once on load
-onViewportResize();
-
 // Init
 loadLB();
 loop();
