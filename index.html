@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>TEMPORAL DEFENSE — Typing Game</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,19 +13,15 @@
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
   --o:#E8751A;--amb:#D4922A;--gold:#C9A227;--dk:#0A0A08;
-  --panel:#141410;--grid:#1E1E18;--txt:#E8D5AA;--dim:#6B5E3E;
+  --panel:#141410;--grid:#2A2A22;--txt:#E8D5AA;--dim:#6B5E3E;
   --glow:rgba(232,117,26,0.6);--bullet:#FF8C00;
 }
 html,body{width:100%;height:100%;overflow:hidden;background:var(--dk);font-family:'Share Tech Mono',monospace;color:var(--txt)}
 
 /* ── LAYOUT ── */
 #app{display:flex;width:100vw;height:100vh;overflow:hidden}
-
-
 #game-wrap{flex:1;position:relative;overflow:hidden;min-width:0}
-
-#gc{
-  width:100%;height:100%;position:relative;overflow:hidden;
+#gc{width:100%;height:100%;position:relative;overflow:hidden;
   background:
     repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(232,117,26,0.03) 2px,rgba(232,117,26,0.03) 4px),
     radial-gradient(ellipse at center,#1A1610 0%,var(--dk) 70%);
@@ -32,7 +30,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--dk);font-famil
 #gc::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 1px,rgba(232,117,26,0.015) 1px,rgba(232,117,26,0.015) 2px);animation:scan 8s linear infinite;pointer-events:none;z-index:101}
 @keyframes scan{to{transform:translateY(20px)}}
 
-#grid-bg{position:absolute;inset:0;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:40px 40px;opacity:0.4}
+#grid-bg{position:absolute;inset:0;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:40px 40px;opacity:0.75}
 #frame{position:absolute;inset:8px;border:2px dotted var(--dim);pointer-events:none;z-index:50}
 #frame::before{content:'';position:absolute;inset:4px;border:1px dotted rgba(107,94,62,0.3)}
 
@@ -55,27 +53,27 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--dk);font-famil
 #acc-v{font-size:14px;font-weight:700;color:var(--gold)}
 
 /* ── Game canvas ── */
-#game-area{position:absolute;top:50px;left:16px;right:16px;bottom:148px;overflow:hidden}
+#game-area{position:absolute;top:50px;left:16px;right:16px;bottom:188px;overflow:hidden}
 #base{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:60px;height:30px;z-index:40}
 .turret-body{width:60px;height:14px;background:var(--o);border:1px solid var(--amb);border-radius:2px 2px 0 0;position:absolute;bottom:0;}
 .turret-barrel{width:3px;height:12px;background:var(--amb);position:absolute;bottom:14px;left:50%;transform:translateX(-50%);transition:transform .05s}
 
 /* ── Typing panel ── */
 #type-panel{
-  position:absolute;bottom:0;left:0;right:0;height:140px;
+  position:absolute;bottom:0;left:0;right:0;height:180px;
   background:linear-gradient(180deg,rgba(20,20,16,0.97),rgba(10,10,8,0.99));
   border-top:2px dotted var(--dim);z-index:60;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 30px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 30px;
 }
 #type-panel::before{content:attr(data-label);position:absolute;top:5px;font-family:'Orbitron',sans-serif;font-size:7px;letter-spacing:4px;color:var(--dim)}
 
-#words-d{display:flex;flex-wrap:wrap;gap:8px 14px;justify-content:center;max-width:960px;padding:6px 0;min-height:44px;align-items:center}
-.wb{font-size:18px;letter-spacing:2px;padding:3px 8px;border:1px dotted var(--dim);color:var(--dim);transition:all .15s;text-transform:uppercase;cursor:default;white-space:nowrap}
+#words-d{display:flex;flex-wrap:wrap;gap:8px 16px;justify-content:center;max-width:960px;padding:6px 0;min-height:80px;max-height:110px;align-items:center;overflow:hidden}
+.wb{font-size:22px;letter-spacing:2px;padding:4px 10px;border:1px dotted var(--dim);color:var(--dim);transition:all .15s;text-transform:uppercase;cursor:default;white-space:nowrap}
 .wb.active{border-color:var(--o);color:var(--txt);box-shadow:0 0 12px rgba(232,117,26,0.3)}
 .wb .tp{color:var(--o);text-shadow:0 0 8px var(--glow)}.wb .te{color:#FF4444;text-shadow:0 0 6px rgba(255,50,50,0.5)}
 .wb.done{border-color:transparent;color:transparent;transform:scale(0.8);opacity:0;transition:all .3s ease-out;pointer-events:none}
 
-#sent-d{font-size:18px;letter-spacing:1px;width:62ch;max-width:92%;text-align:left;line-height:1.9;padding:4px 0;min-height:50px;color:var(--dim);display:none;word-wrap:break-word;overflow-wrap:break-word}
+#sent-d{font-size:22px;letter-spacing:1px;width:62ch;max-width:92%;text-align:left;line-height:1.8;padding:4px 0;min-height:80px;max-height:110px;overflow:hidden;color:var(--dim);display:none;word-wrap:break-word;overflow-wrap:break-word}
 #free-d{display:none;width:100%;max-width:900px;height:42px;overflow:hidden;position:relative;align-items:center}
 #free-inner{position:absolute;white-space:nowrap;font-size:20px;letter-spacing:3px;font-family:'Share Tech Mono',monospace;transition:transform 0.05s linear;text-transform:uppercase}
 .fc{color:var(--dim)}.ft{color:var(--o);text-shadow:0 0 6px rgba(232,117,26,0.5)}.fcc{color:var(--txt);border-bottom:2px solid var(--o)}
@@ -84,7 +82,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--dk);font-famil
 #input-show{font-size:12px;color:var(--o);margin-top:6px;letter-spacing:2px;height:20px;border:1px dotted var(--dim);padding:2px 14px;min-width:180px;text-align:center}
 #input-show::after{content:'█';animation:blink .6s step-end infinite;color:var(--o)}
 @keyframes blink{50%{opacity:0}}
-#hidden-input{position:absolute;left:-9999px;opacity:0}
+#hidden-input{position:fixed;bottom:0;left:0;width:1px;height:1px;opacity:0;border:none;padding:0;margin:0}
 
 /* ── ENEMIES ── */
 .enemy{position:absolute;z-index:30;pointer-events:none;display:flex;align-items:center;justify-content:center}
@@ -189,31 +187,31 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--dk);font-famil
 }
 
 /* ── Overlay ── */
-#overlay{position:absolute;inset:0;background:rgba(10,10,8,0.94);z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px}
+#overlay{position:fixed;inset:0;background:rgba(10,10,8,0.97);z-index:500;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;overflow-y:auto;padding:20px 0}
 #overlay.hidden{display:none}
 #overlay h1{font-family:'Orbitron',sans-serif;font-weight:900;font-size:32px;letter-spacing:8px;color:var(--o);text-shadow:0 0 30px var(--glow)}
 #overlay h2{font-family:'Orbitron',sans-serif;font-size:12px;letter-spacing:4px;color:var(--dim);font-weight:400}
-.mode-sel{display:flex;gap:16px;margin-top:8px}
-.mode-btn{font-family:'Orbitron',sans-serif;font-size:12px;letter-spacing:3px;padding:12px 28px;border:2px dotted var(--o);background:transparent;color:var(--o);cursor:pointer;text-transform:uppercase;transition:all .2s;text-shadow:0 0 8px rgba(232,117,26,0.3)}
+.mode-sel{display:flex;gap:16px;margin-top:8px;justify-content:center;align-items:flex-start}
+.mode-btn{font-family:'Orbitron',sans-serif;font-size:12px;letter-spacing:3px;padding:18px 0;width:180px;text-align:center;border:2px dotted var(--o);background:transparent;color:var(--o);cursor:pointer;text-transform:uppercase;transition:all .2s;text-shadow:0 0 8px rgba(232,117,26,0.3)}
 .mode-btn:hover{opacity:0.8}
 .mode-btn.sel{background:var(--o);color:var(--dk);text-shadow:none;border-style:solid}
-.start-btn{font-family:'Orbitron',sans-serif;font-size:13px;letter-spacing:4px;color:var(--dk);background:var(--o);border:none;padding:11px 36px;cursor:pointer;text-transform:uppercase;box-shadow:0 0 20px var(--glow);transition:all .2s;margin-top:8px}
+.start-btn{font-family:'Orbitron',sans-serif;font-size:13px;letter-spacing:4px;color:var(--dk);background:var(--o);border:none;padding:11px 0;width:300px;text-align:center;cursor:pointer;text-transform:uppercase;box-shadow:0 0 20px var(--glow);transition:all .2s;margin-top:8px}
 .start-btn:hover{box-shadow:0 0 40px var(--glow);transform:scale(1.05)}
 .stats-line{font-size:12px;color:var(--amb);letter-spacing:2px}
 .mode-desc{font-size:9px;color:var(--dim);letter-spacing:2px;margin-top:3px;font-family:'Share Tech Mono',monospace;text-align:center}
-#snd-tog{position:absolute;top:10px;right:14px;font-family:'Orbitron',sans-serif;font-size:8px;letter-spacing:2px;color:var(--dim);background:none;border:1px dotted var(--dim);padding:3px 8px;cursor:pointer;z-index:210;transition:all .2s}
+#snd-tog{font-family:'Orbitron',sans-serif;font-size:8px;letter-spacing:2px;color:var(--dim);background:none;border:1px dotted var(--dim);padding:3px 8px;cursor:pointer;z-index:60;transition:all .2s}
 #snd-tog:hover{border-color:var(--o);color:var(--o)}
-#theme-tog-hud{position:absolute;top:10px;left:14px;font-family:'Orbitron',sans-serif;font-size:8px;letter-spacing:2px;color:var(--dim);background:none;border:1px dotted var(--dim);padding:3px 8px;cursor:pointer;z-index:210;transition:all .2s}
-#theme-tog-hud:hover{border-color:var(--o);color:var(--o)}
+#menu-btn-hud{position:absolute;top:10px;right:14px;font-family:'Orbitron',sans-serif;font-size:8px;letter-spacing:2px;color:var(--dim);background:none;border:1px dotted var(--dim);padding:3px 8px;cursor:pointer;z-index:60;transition:all .2s}
+#menu-btn-hud:hover{border-color:var(--o);color:var(--o)}
 #theme-tog-overlay{font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:2px;color:var(--dim);background:none;border:1px dotted var(--dim);padding:4px 10px;cursor:pointer;transition:all .2s}
 #theme-tog-overlay:hover{border-color:var(--o);color:var(--o)}
 #tunnel-canvas,#star-canvas{position:absolute;inset:0;z-index:0;pointer-events:none;display:none}
 #tunnel-canvas.active,#star-canvas.active{display:block}
 
 /* ── Leaderboard ── */
-#lb-btn{font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:3px;color:var(--amb);background:none;border:1px dotted var(--dim);padding:6px 20px;cursor:pointer;margin-top:4px;transition:all .2s}
+#lb-btn{font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:3px;color:var(--amb);background:none;border:1px dotted var(--dim);padding:6px 0;width:300px;text-align:center;cursor:pointer;margin-top:4px;transition:all .2s}
 #lb-btn:hover{border-color:var(--o);color:var(--o)}
-#lb-panel{display:none;position:absolute;inset:0;background:rgba(10,10,8,0.96);z-index:250;flex-direction:column;align-items:center;justify-content:flex-start;padding:30px}
+#lb-panel{display:none;position:absolute;inset:0;background:rgba(10,10,8,0.96);z-index:550;flex-direction:column;align-items:center;justify-content:flex-start;padding:30px}
 #lb-panel.show{display:flex}
 #lb-panel h2{font-family:'Orbitron',sans-serif;font-size:18px;letter-spacing:6px;color:var(--o);margin-bottom:16px;text-shadow:0 0 20px var(--glow)}
 #lb-table{width:90%;max-width:500px;border-collapse:collapse}
@@ -224,7 +222,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--dk);font-famil
 #lb-close:hover{border-color:var(--o);color:var(--o)}
 
 /* ── Name entry ── */
-#name-entry{display:none;position:absolute;inset:0;background:rgba(10,10,8,0.96);z-index:260;flex-direction:column;align-items:center;justify-content:center;gap:12px}
+#name-entry{display:none;position:absolute;inset:0;background:rgba(10,10,8,0.96);z-index:560;flex-direction:column;align-items:center;justify-content:center;gap:12px}
 #name-entry.show{display:flex}
 #name-entry h2{font-family:'Orbitron',sans-serif;font-size:16px;letter-spacing:5px;color:var(--o);text-shadow:0 0 20px var(--glow)}
 #name-input{font-family:'Share Tech Mono',monospace;font-size:20px;letter-spacing:4px;color:var(--o);background:transparent;border:2px dotted var(--dim);padding:10px 20px;text-align:center;width:260px;outline:none;text-transform:uppercase}
@@ -236,7 +234,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--dk);font-famil
 #attr-line{font-size:7px;color:rgba(107,94,62,0.5);letter-spacing:1px;margin-top:4px;text-align:center;max-width:400px;line-height:1.4}
 
 /* ── Pause overlay ── */
-#pause-panel{display:none;position:absolute;inset:0;background:rgba(10,10,8,0.88);z-index:220;flex-direction:column;align-items:center;justify-content:center;gap:14px;backdrop-filter:blur(2px)}
+#pause-panel{display:none;position:fixed;inset:0;background:rgba(10,10,8,0.88);z-index:520;flex-direction:column;align-items:center;justify-content:center;gap:14px;backdrop-filter:blur(2px)}
 #pause-panel.show{display:flex}
 #pause-panel h1{font-family:'Orbitron',sans-serif;font-weight:900;font-size:30px;letter-spacing:10px;color:var(--o);text-shadow:0 0 30px var(--glow);animation:pausePulse 2s ease-in-out infinite}
 @keyframes pausePulse{0%,100%{opacity:1}50%{opacity:.6}}
@@ -247,57 +245,136 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--dk);font-famil
 .pause-btn.primary:hover{box-shadow:0 0 30px var(--glow);transform:scale(1.05)}
 #pause-stats{font-size:11px;color:var(--amb);letter-spacing:2px;font-family:'Share Tech Mono',monospace;margin:4px 0}
 #pause-hint{font-size:8px;color:var(--dim);letter-spacing:3px;font-family:'Orbitron',sans-serif;margin-top:6px}
+#theme-tog-pause{font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:3px;padding:8px 36px;border:1px dotted var(--dim);background:transparent;color:var(--dim);cursor:pointer;text-transform:uppercase;transition:all .2s;min-width:220px}
+#theme-tog-pause:hover{border-color:var(--o);color:var(--o)}
 
 
 
+/* Hide gameplay HUD buttons behind overlay */
 /* ── MOBILE SUPPORT ── */
-@media(max-width:768px),(max-height:500px){
-  #hud{top:6px;left:8px;right:8px;padding:0 4px}
-  .hud-v{font-size:13px;min-width:30px}
-  .hud-l{font-size:7px}
-  #title-badge{font-size:9px;letter-spacing:3px;padding:2px 8px}
-  #hp-bar-c{width:70px;height:6px}
-  #wpm-d{top:42px;left:12px}
-  #wpm-v{font-size:16px}
-  #acc-d{top:68px;left:12px}
+@media(max-width:768px){
+  /* Hide decorative ads and frame */
+  #ad-left,#ad-right{display:none}
+  #frame,#frame::before{display:none}
+
+  /* HUD — slim single row */
+  #hud{top:0;left:0;right:0;padding:4px 10px;
+    background:rgba(10,10,8,0.9);border-bottom:1px dotted var(--dim);
+    z-index:60}
+  .hud-v{font-size:13px;min-width:28px}
+  .hud-l{font-size:6px}
+  #title-badge{font-size:8px;letter-spacing:2px;padding:2px 6px}
+  #hp-bar-c{width:60px;height:5px}
+
+  /* Stats layout: COMBO under MENU left, WPM/ACC right */
+  #wpm-d{top:68px;left:10px;right:auto;text-align:left}
+  #wpm-v{font-size:14px}
+  #acc-d{top:90px;left:10px;right:auto;text-align:left}
   #acc-v{font-size:11px}
-  #combo-d{top:42px;right:12px;font-size:18px}
-  #game-area{top:36px;left:8px;right:8px;bottom:120px}
-  #type-panel{height:112px;padding:6px 12px}
-  #type-panel::before{font-size:6px;top:3px}
-  #words-d{gap:6px 10px;max-width:100%;padding:4px 0}
-  .wb{font-size:14px;letter-spacing:1px;padding:2px 6px}
-  #sent-d{font-size:14px;width:45ch;line-height:1.6}
-  #input-show{font-size:11px;height:18px;padding:1px 10px;min-width:140px}
-  #frame{inset:4px;border-width:1px}
-  #frame::before{inset:2px}
-  #base{width:44px;height:22px}
-  .turret-body{width:44px;height:14px}
-  .turret-barrel{width:4px;height:12px;bottom:12px}
-  .enemy-scout{width:28px;height:28px}
-  .enemy-scout .ebody{width:22px;height:22px}
-  .enemy-drone{width:34px;height:34px}
-  .enemy-drone .ebody{width:28px;height:16px}
-  .enemy-drone .ebody::before,.enemy-drone .ebody::after{border-left:14px solid transparent;border-right:14px solid transparent}
-  .enemy-drone .ebody::before{top:-9px;border-bottom:9px solid var(--amb)}
-  .enemy-drone .ebody::after{bottom:-9px;border-top:9px solid var(--amb)}
-  .enemy-tank{width:42px;height:30px}
-  .enemy-tank .ebody{width:36px;height:24px}
-  .enemy-boss{width:52px;height:52px}
-  .enemy-boss .ebody{width:44px;height:44px;font-size:16px}
-  #overlay h1{font-size:24px;letter-spacing:6px}
-  #overlay h2{font-size:10px;letter-spacing:3px}
-  .mode-btn{font-size:10px;padding:10px 20px;letter-spacing:2px}
-  .start-btn{font-size:11px;padding:9px 28px;letter-spacing:3px}
-  #lb-btn{font-size:9px;padding:5px 16px}
-  .mode-desc{font-size:8px}
-  #attr-line{font-size:6px;max-width:300px}
-  #snd-tog{font-size:7px;padding:2px 6px;top:6px;right:8px}
-  #lvl-ban{font-size:24px;letter-spacing:6px}
-  #lvl-sub{font-size:9px;letter-spacing:3px}
-  .stats-line{font-size:10px}
-  #pause-panel h1{font-size:22px;letter-spacing:6px}
-  .pause-btn{font-size:10px;padding:10px 24px;min-width:180px}
+  #combo-d{top:68px;right:10px;left:auto;text-align:right;font-size:16px}
+
+  /* Game area — full width, max height */
+  #game-area{
+    top:118px;left:0;right:0;
+    bottom:160px;
+  }
+
+  /* Uniform typing panel height for all modes */
+  #type-panel{
+    height:160px;padding:6px 10px 10px;
+  }
+  #type-panel::before{font-size:6px;top:3px;letter-spacing:2px}
+
+  /* Words mode */
+  #words-d{gap:5px 10px;max-width:100%;padding:4px 0;min-height:56px;max-height:90px}
+  .wb{font-size:18px;letter-spacing:1px;padding:3px 6px;white-space:nowrap}
+
+  /* Chronicles mode */
+  #sent-d{font-size:18px;width:100%;max-width:100%;line-height:1.6;min-height:56px;max-height:90px}
+
+  /* Input display */
+  #input-show{font-size:10px;height:18px;padding:2px 8px;min-width:120px;margin-top:4px}
+
+  /* Turret — smaller */
+  #base{width:36px;height:18px}
+  .turret-body{width:36px;height:10px;border-radius:2px 2px 0 0}
+  .turret-barrel{width:2px;height:8px;bottom:10px}
+
+  /* Enemy sizes */
+  .enemy-scout{width:24px;height:24px}
+  .enemy-scout .ebody{width:18px;height:18px}
+  .enemy-drone{width:30px;height:30px}
+  .enemy-drone .ebody{width:24px;height:14px}
+  .enemy-drone .ebody::before,.enemy-drone .ebody::after{border-left:12px solid transparent;border-right:12px solid transparent}
+  .enemy-drone .ebody::before{top:-7px;border-bottom:7px solid var(--amb)}
+  .enemy-drone .ebody::after{bottom:-7px;border-top:7px solid var(--amb)}
+  .enemy-tank{width:36px;height:26px}
+  .enemy-tank .ebody{width:30px;height:20px}
+  .enemy-glitch{width:24px;height:24px}
+  .enemy-glitch .ebody{width:20px;height:20px}
+  .enemy-boss{width:44px;height:44px}
+  .enemy-boss .ebody{width:36px;height:36px}
+  .enemy-boss .ebody::after{font-size:14px}
+
+  /* Overlay — compact */
+  #overlay{gap:8px;padding:12px}
+  #overlay h1{font-size:22px;letter-spacing:5px}
+  #overlay h2{font-size:9px;letter-spacing:2px}
+  .mode-sel{gap:8px;flex-wrap:wrap;justify-content:center}
+  .mode-btn{font-size:10px;padding:14px 0;width:120px;letter-spacing:2px}
+  .mode-desc{font-size:7px;letter-spacing:1px}
+  .start-btn{font-size:11px;padding:10px 0;width:260px}
+  #lb-btn{font-size:8px;padding:5px 0;width:260px}
+  #attr-line{font-size:6px;max-width:280px;line-height:1.3}
+  #snd-tog,#theme-tog-overlay{font-size:7px;padding:2px 6px}
+  #menu-btn-hud{font-size:7px;padding:2px 6px;right:10px;left:auto;top:36px;transform:none}
+
+  /* Level banner */
+  #lvl-ban{font-size:22px;letter-spacing:5px}
+  #lvl-sub{font-size:8px;letter-spacing:2px}
+
+  /* Pause panel */
+  #pause-panel h1{font-size:20px;letter-spacing:5px}
+  .pause-btn{font-size:9px;padding:10px 20px;min-width:160px}
+  #pause-stats{font-size:10px}
+
+  /* Free zen mode — full screen, max text space */
+  #free-zen{
+    width:92%;padding:16px 14px 12px;
+    top:48%;
+  }
+  #free-zen-text{font-size:15px;line-height:1.8;max-height:none}
+  #free-zen-prog{font-size:7px;margin-top:8px;padding-top:6px}
+
+  /* Tap prompt */
+  #tap-prompt{bottom:130px;font-size:8px}
+
+  /* LB panel */
+  #lb-table{font-size:11px}
+  #lb-panel h2{font-size:14px;letter-spacing:3px}
+
+  /* Name entry */
+  #name-input{font-size:16px;padding:8px 14px;width:220px}
+}
+
+/* Portrait phones — extra compact */
+@media(max-width:480px){
+  #title-badge{display:none}
+  #hud{justify-content:space-between}
+  .wb{font-size:12px;padding:2px 4px}
+  #sent-d{font-size:12px}
+  #free-zen-text{font-size:13px;max-height:44vh}
+  #overlay h1{font-size:18px;letter-spacing:4px}
+}
+
+/* Landscape phones — maximize game area */
+@media(max-height:500px){
+  #hud{top:0;padding:2px 8px}
+  #game-area{top:24px;bottom:110px}
+  #type-panel{height:110px;padding:4px 10px 6px}
+  #wpm-d,#acc-d,#combo-d{display:none}
+  #free-zen-text{font-size:13px;max-height:55vh}
+  #free-zen{top:46%;padding:10px 14px 8px}
 }
 
 /* Tap-to-type prompt for touch devices */
@@ -321,26 +398,35 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--dk);font-famil
   background:rgba(10,10,8,0.92);
   border:1px dotted var(--dim);
   box-shadow:0 0 60px rgba(0,0,0,0.5),0 0 30px rgba(232,117,26,0.04);
+  overflow:hidden;
 }
 #free-zen.active{display:block}
 #free-zen-label{
   font-family:'Orbitron',sans-serif;font-size:7px;letter-spacing:4px;
-  color:var(--dim);display:block;margin-bottom:14px;text-align:center;
+  color:rgba(107,94,62,0.4);display:block;margin-top:12px;text-align:center;
+  border-top:1px dotted rgba(107,94,62,0.2);padding-top:8px;
 }
+#free-zen-clip{overflow:visible;position:relative}
 #free-zen-text{
   font-family:'Share Tech Mono',monospace;font-size:20px;
   line-height:2.05;letter-spacing:0.4px;word-break:break-word;
-  overflow:hidden;max-height:210px;position:relative;
+  position:relative;
 }
 #free-zen-prog{
   font-family:'Orbitron',sans-serif;font-size:8px;letter-spacing:3px;
   color:var(--dim);display:flex;justify-content:space-between;
   margin-top:14px;border-top:1px dotted rgba(107,94,62,0.25);padding-top:10px;
 }
-@media(max-width:768px),(max-height:500px){
-  #free-zen{padding:16px 18px 14px}
-  #free-zen-text{font-size:15px;line-height:1.85;max-height:170px}
-  #free-zen-prog{font-size:7px}
+@media(max-width:768px){
+  #free-zen{width:94%;padding:16px 14px 12px;top:48%}
+  #free-zen-clip{height:40vh}
+  #free-zen-text{font-size:15px;line-height:1.8}
+  #free-zen-prog{font-size:7px;margin-top:8px;padding-top:6px}
+}
+@media(max-height:500px){
+  #free-zen{top:46%;padding:10px 14px 8px}
+  #free-zen-clip{height:52vh}
+  #free-zen-text{font-size:13px;line-height:1.7}
 }
 </style>
 </head>
@@ -371,9 +457,9 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--dk);font-famil
   <div id="game-area">
     <div id="base"><div class="turret-barrel" id="barrel"></div><div class="turret-body"></div></div>
     <div id="free-zen">
-      <span id="free-zen-label">▸ FREE FLOW ◂</span>
-      <div id="free-zen-text"></div>
+      <div id="free-zen-clip"><div id="free-zen-text"></div></div>
       <div id="free-zen-prog"><span id="fzp-words">0 WORDS</span><span id="fzp-pct">0%</span></div>
+      <span id="free-zen-label">▸ FREE FLOW ◂</span>
     </div>
   </div>
 
@@ -388,7 +474,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--dk);font-famil
   <div id="lvl-ban"><div id="lvl-ban-t"></div><div id="lvl-sub"></div></div>
 
   <!-- ── OVERLAY ── -->
-  <button id="theme-tog-hud">THEME: GRID</button>
+  <button id="menu-btn-hud">MENU</button>
   <div id="overlay">
     <h2>▸ TEMPORAL DEFENSE SYSTEM ◂</h2>
     <h1 id="ov-title">TYPE TO SURVIVE</h1>
@@ -401,13 +487,13 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--dk);font-famil
     </div>
     <button class="start-btn" id="start-btn">INITIALIZE</button>
     <button id="lb-btn">LEADERBOARD</button>
-    <h2 style="font-size:9px;margin-top:4px">TYPE TO FIRE • DESTROY THREATS BEFORE THEY REACH BASE</h2>
+    <h2 id="ov-hint" style="font-size:9px;margin-top:4px">TYPE TO FIRE • DESTROY THREATS BEFORE THEY REACH BASE</h2>
     <div id="attr-line">
       WORDS: Google Trillion Word Corpus (Public Domain) &bull;
       CHRONICLES: Project Gutenberg Public Domain Classics &bull;
       Austen, Carroll, Baum, Stevenson, Twain, Barrie, Shelley, Dickens, Alcott, Wilde, Doyle, Montgomery
     </div>
-    <div style="display:flex;gap:10px;margin-top:2px"><button id="snd-tog">SOUND: ON</button><button id="theme-tog-overlay">THEME: GRID</button></div>
+    <div style="display:flex;gap:10px;margin-top:2px;justify-content:center"><button id="snd-tog">SOUND: ON</button><button id="theme-tog-overlay">THEME: GRID</button></div>
   </div>
 
   <!-- ── LEADERBOARD PANEL ── -->
@@ -431,6 +517,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--dk);font-famil
     <h2>▸ TIMELINE SUSPENDED ◂</h2>
     <div id="pause-stats"></div>
     <button class="pause-btn primary" id="pause-resume">RESUME</button>
+    <button class="pause-btn" id="theme-tog-pause">THEME: GRID</button>
     <button class="pause-btn" id="pause-restart">RESTART</button>
     <button class="pause-btn" id="pause-menu">MAIN MENU</button>
     <div id="pause-hint">PRESS ESC TO RESUME</div>
@@ -1415,24 +1502,6 @@ const FREE_PHRASES = [
   'into the dark','beyond the edge','against the tide','through the fire','out of time',
 ];
 
-function genFreeText() {
-  // Build ~500 chars of mixed words and phrases
-  const wordTier = Math.min(Math.ceil(S.level / 2), 3);
-  const wordPool = [];
-  for (let t = 1; t <= wordTier; t++) wordPool.push(...(WORDS[t] || []));
-  const shuffledWords = [...wordPool].sort(() => Math.random() - 0.5).slice(0, 200);
-  const shuffledPhrases = [...FREE_PHRASES].sort(() => Math.random() - 0.5);
-  let text = '';
-  let wi = 0, pi = 0;
-  while (text.length < 500) {
-    if (Math.random() < 0.6) {
-      text += (shuffledWords[wi++ % shuffledWords.length] || 'the') + ' ';
-    } else {
-      text += (shuffledPhrases[pi++ % shuffledPhrases.length]) + ' ';
-    }
-  }
-  return text.trim().toUpperCase();
-}
 
 // ── FREE ZEN PASSAGES ──
 const FREE_LONG_PHRASES = [
@@ -1481,6 +1550,8 @@ function genFreePassage() {
 function renderFreeZen() {
   const fzt = document.getElementById('free-zen-text');
   if (!fzt) return;
+
+  // Render full passage statically — no scrolling, no sliding window
   let h = '';
   for (let i = 0; i < S.freeText.length; i++) {
     const ch = S.freeText[i];
@@ -1489,18 +1560,13 @@ function renderFreeZen() {
       const ok = (S.sentInput[i] || '') === ch;
       h += `<span class="${ok ? 'ft' : 'te'}">${esc}</span>`;
     } else if (i === S.freeIdx) {
-      h += `<span class="fcc" id="zen-cur">${esc}</span>`;
+      h += `<span class="fcc">${esc}</span>`;
     } else {
       h += `<span class="fc">${esc}</span>`;
     }
   }
   fzt.innerHTML = h;
-  // Slide text so cursor stays near top third
-  const cur = document.getElementById('zen-cur');
-  if (cur) {
-    const shift = Math.max(0, cur.offsetTop - fzt.clientHeight * 0.28);
-    fzt.style.transform = `translateY(-${shift}px)`;
-  }
+
   // Progress
   const wEl = document.getElementById('fzp-words');
   const pEl = document.getElementById('fzp-pct');
@@ -1513,31 +1579,6 @@ function renderFreeZen() {
 }
 
 const freeD = document.getElementById('free-d');
-let freeInner = null;
-
-function initFreeDisplay() {
-  freeD.innerHTML = '<div id="free-inner"></div>';
-  freeInner = document.getElementById('free-inner');
-}
-
-function renderFree() {
-  if (!freeInner) return;
-  const SHOW_AHEAD = 40;
-  const SHOW_BEHIND = 15;
-  const start = Math.max(0, S.freeIdx - SHOW_BEHIND);
-  const end = Math.min(S.freeText.length, S.freeIdx + SHOW_AHEAD);
-  let h = '';
-  for (let i = start; i < end; i++) {
-    const ch = S.freeText[i] === ' ' ? '&thinsp;&thinsp;' : S.freeText[i];
-    if (i < S.freeIdx)      h += `<span class="ft">${ch}</span>`;
-    else if (i === S.freeIdx) h += `<span class="fcc">${ch}</span>`;
-    else                     h += `<span class="fc">${ch}</span>`;
-  }
-  freeInner.innerHTML = h;
-  // Slide so cursor stays at fixed position (SHOW_BEHIND chars from left)
-  const charW = 16; // approx px per char at 20px monospace
-  freeInner.style.transform = `translateX(${SHOW_BEHIND * charW - S.freeIdx * charW}px)`;
-}
 
 function handleFreeInput(e) {
   const k = e.key;
@@ -1567,13 +1608,10 @@ function handleFreeInput(e) {
   tt.textContent = S.sentInput.slice(-20).join('');
   renderFreeZen();
 
-  // Word complete on space
-  if (expected === ' ' && typed === expected) {
-    const before = S.freeText.substring(0, S.freeIdx).trimEnd();
-    const lastSpace = before.lastIndexOf(' ');
-    const wordLen = Math.max(before.length - lastSpace - 1, 3);
-    onComplete(wordLen);
-  }
+  // Update WPM on HUD directly (no enemies, no bullets)
+  const fElapsed = (Date.now() - S.startTime - totalPaused) / 60000;
+  if (fElapsed > 0.05) wpmV.textContent = Math.round((S.correctChars / 5) / fElapsed);
+  if (S.totalChars > 0) accV.textContent = Math.round(S.correctChars / S.totalChars * 100) + '%';
 
   // Passage complete
   if (S.freeIdx >= S.freeText.length) {
@@ -1775,7 +1813,7 @@ function resetGame() {
   const fzEl = document.getElementById('free-zen');
   fzEl.classList.remove('active');
   const fztEl = document.getElementById('free-zen-text');
-  if (fztEl) { fztEl.innerHTML = ''; fztEl.style.transform = ''; }
+  if (fztEl) { fztEl.innerHTML = ''; fztEl.style.transform = ''; const clipEl = document.getElementById('free-zen-clip'); if(clipEl) clipEl.scrollTop = 0; }
 
   if (S.mode === 'words') {
     wd.style.display = 'flex'; sd.style.display = 'none'; freeD.style.display = 'none';
@@ -1813,6 +1851,9 @@ function pauseGame() {
   if (!S.running || S.paused) return;
   S.paused = true;
   pausedAt = Date.now();
+  hi.blur();
+  setTimeout(() => { if(document.activeElement) document.activeElement.blur(); }, 50);
+  hi.blur(); // dismiss keyboard on mobile
   // Show pause stats
   const el = (Date.now() - S.startTime - totalPaused) / 60000;
   const wpm = el > .05 ? Math.round((S.correctChars / 5) / el) : 0;
@@ -2154,6 +2195,8 @@ function applyTheme(idx) {
   currentTheme = idx;
   const name = THEMES[idx];
   document.querySelectorAll('[id^="theme-tog"]').forEach(b => b.textContent = `THEME: ${name}`);
+  const pTheme = document.getElementById('theme-tog-pause');
+  if (pTheme) pTheme.textContent = `THEME: ${name}`;
   gridBg.style.display     = idx === 0 ? '' : 'none';
   tunnelCanvas.classList.toggle('active', idx === 1);
   starCanvas.classList.toggle('active',   idx === 2);
@@ -2168,16 +2211,23 @@ function cycleTheme() {
 // ══════════════════════════════════════════════════════
 //  EVENTS
 // ══════════════════════════════════════════════════════
+const HINTS = {
+  words: 'TYPE ANY WORD TO FIRE • DESTROY THREATS BEFORE THEY REACH BASE',
+  sentences: 'TYPE THE PASSAGE • DESTROY THREATS BEFORE THEY REACH BASE',
+  free: 'ZEN TYPING MODE • NO ENEMIES • JUST FLOW'
+};
 document.querySelectorAll('.mode-btn').forEach(b => {
   b.addEventListener('click', () => {
     document.querySelectorAll('.mode-btn').forEach(x => x.classList.remove('sel'));
     b.classList.add('sel'); S.mode = b.dataset.mode;
+    document.getElementById('ov-hint').textContent = HINTS[S.mode] || HINTS.words;
   });
 });
 
 sndTog.addEventListener('click', () => { sndOn = !sndOn; sndTog.textContent = `SOUND: ${sndOn ? 'ON' : 'OFF'}`; });
-document.getElementById('theme-tog-hud').addEventListener('click', cycleTheme);
+document.getElementById('menu-btn-hud').addEventListener('click', () => { if (S.running) pauseGame(); });
 document.getElementById('theme-tog-overlay').addEventListener('click', cycleTheme);
+document.getElementById('theme-tog-pause').addEventListener('click', cycleTheme);
 
 $('start-btn').addEventListener('click', () => {
   initAudio(); ov.classList.add('hidden');
@@ -2224,6 +2274,58 @@ document.addEventListener('touchstart', () => { if (S.running && !S.paused) hi.f
 hi.addEventListener('keydown', handleInput);
 hi.addEventListener('input', () => { hi.value = ''; });
 hi.addEventListener('blur', () => { if (S.running && !S.paused) setTimeout(() => hi.focus(), 10); });
+
+// ══════════════════════════════════════════════════════
+//  VISUAL VIEWPORT — shrink game to fit above keyboard on iOS
+// ══════════════════════════════════════════════════════
+const gameWrap = document.getElementById('gc');
+const appEl    = document.getElementById('app');
+
+function onViewportResize() {
+  const vvh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+  const vvw = window.visualViewport ? window.visualViewport.width  : window.innerWidth;
+
+  // Apply height to root containers
+  appEl.style.height    = vvh + 'px';
+  gameWrap.style.height = vvh + 'px';
+
+  // Compact panel height when space is tight (keyboard open)
+  const isTight = vvh < 500;
+  const panelH  = isTight ? 90 : (vvw <= 768 ? 160 : 180);
+  const hudH    = isTight ? 24 : (vvw <= 768 ? 28  : 50);
+
+  tPanel.style.height = panelH + 'px';
+  document.getElementById('game-area').style.bottom = panelH + 'px';
+  document.getElementById('game-area').style.top    = hudH + 'px';
+
+  // Hide WPM/ACC/COMBO when really tight
+  const wpmEl = document.getElementById('wpm-d');
+  const accEl = document.getElementById('acc-d');
+  if (wpmEl) wpmEl.style.display = isTight ? 'none' : '';
+  if (accEl) accEl.style.display = isTight ? 'none' : '';
+
+  // Compact panel content size
+  if (isTight) {
+    tPanel.style.padding = '2px 10px 4px';
+    const wbEls = document.querySelectorAll('.wb');
+    wbEls.forEach(el => { el.style.fontSize = '11px'; el.style.padding = '1px 4px'; });
+  }
+
+  // Free zen box — vertically center in available space
+  const fzEl = document.getElementById('free-zen');
+  if (fzEl && fzEl.classList.contains('active')) {
+    const clipEl = document.getElementById('free-zen-clip');
+    if (clipEl) clipEl.style.height = Math.max(120, vvh * 0.42) + 'px';
+  }
+}
+
+if (window.visualViewport) {
+  window.visualViewport.addEventListener('resize', onViewportResize);
+  window.visualViewport.addEventListener('scroll', onViewportResize);
+}
+window.addEventListener('resize', onViewportResize);
+// Run once on load
+onViewportResize();
 
 // Init
 loadLB();
